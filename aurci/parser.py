@@ -1,6 +1,6 @@
 import sys
 import argparse
-import bootstrap
+from aurci import bootstrap
 
 
 def commands(option, package):
