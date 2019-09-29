@@ -4,9 +4,9 @@ import os.path as p
 
 
 
-def cloning(repo):
-    url = "git@github.com:ros-melodic-arch/{0}.git".format(repo.name)
-    path = p.join("../packages/{0}".format(repo.name))
+def cloning(repo_name):
+    url = "git@github.com:ros-melodic-arch/{0}.git".format(repo_name)
+    path = p.join("../packages/{0}".format(repo_name))
     Repo.clone_from(url, path)
 
 def clone(package):
@@ -15,6 +15,6 @@ def clone(package):
         o = g.get_organization("ros-melodic-arch")
         repos = o.get_repos(type="all", sort="full_name", direction="desc")
         for repo in repos:
-            cloning(repo)
+            cloning(repo.name)
     else:
         cloning(package)
