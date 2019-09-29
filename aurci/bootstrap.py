@@ -5,7 +5,7 @@ import os.path as p
 
 
 def cloning(repo):
-    url = "ssh://git@github.com:ros-melodic-arch/{0}.git".format(repo.name)
+    url = "git@github.com:ros-melodic-arch/{0}.git".format(repo.name)
     path = p.join("../packages/{0}".format(repo.name))
     Repo.clone_from(url, path)
 
