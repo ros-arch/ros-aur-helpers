@@ -1,11 +1,12 @@
 import sys
 import argparse
-from aurci import bootstrap
+from aurci import bootstrap, build
 
 
 def commands(option, package):
     args = {
-        "clone"  : bootstrap.clone
+        "clone"  : bootstrap.clone,
+        "build"  : build.build
     }
     args[option](package)
 
