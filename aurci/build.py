@@ -6,13 +6,14 @@ def dmakepkg(package):
     path = "./packages/{0}/".format(package)
     if os.path.isfile(path + "PKGBUILD"):
         try:
-             process = subprocess.run(["dmakepkg", "-xy"], stderr=subprocess.PIPE, cwd=path, check=True)
-             process
-             return None
+            subprocess.run(["dmakepkg", "-xy"], stdout=subprocess.DEVNULL, stderr=STDOUT, cwd=path, check=True)
         except subprocess.CalledProcessError:
-            return process.stderr
+            with open("failed.txt", "w") as fobj:
+                fobj.write(package + "\n")
+                pass
     
 def build(package):
+    os.remove("failed.txt")
     if package=="all":
         for folder in os.listdir("./packages"):
             dmakepkg(folder)    
