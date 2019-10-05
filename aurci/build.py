@@ -45,7 +45,7 @@ class Packages:
         if self.package=="all":
             for folder in os.listdir("./packages"):
                 try:
-                    Packages(self.package).dmakepkg()
+                    Packages(folder).dmakepkg()
                     Packages(folder).mvpkg()
                     Packages(folder).aur_push()
                 except RuntimeWarning:
