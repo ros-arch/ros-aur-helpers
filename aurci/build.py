@@ -2,6 +2,7 @@ import subprocess
 import os
 import glob
 import shutil
+from git import Repo
 
 class Packages:
     def __init__(self, package):
@@ -33,6 +34,10 @@ class Packages:
     def mvpkg(self):
         for pkg_path in glob.iglob(self.path + "/*pkg.tar*"):
             shutil.copy(pkg_path, "./repository/")
+    
+    def aur_push(self):
+        pkg_repo = Repo(path=self.path).create_remote('aur', "aur@aur.archlinux.org/{0}.git".format(self.package))
+        pkg_repo.push
 
     def deploy(self):
         if os.path.exists("failed.txt"):
@@ -42,6 +47,7 @@ class Packages:
                 try:
                     Packages(self.package).dmakepkg()
                     Packages(folder).mvpkg()
+                    self.aur_push()
                 except RuntimeWarning:
                     print("Building of {0} failed".format(self.package))
                     pass
