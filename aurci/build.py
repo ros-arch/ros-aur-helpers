@@ -29,7 +29,7 @@ class Packages:
             for folder in os.listdir("./packages"):
                 Packages(folder).dmakepkg()
         else:
-            Packages(self.package).dmakepkg()
+            self.dmakepkg()
 
     def mvpkg(self):
         for pkg_path in glob.iglob(self.path + "/*pkg.tar*"):
@@ -45,9 +45,15 @@ class Packages:
         if self.package=="all":
             for folder in os.listdir("./packages"):
                 try:
-                    Packages(folder).dmakepkg()
-                    Packages(folder).mvpkg()
-                    Packages(folder).aur_push()
+                    Packages(folder).deploy()
+                except RuntimeWarning:
+                    print("Building of {0} failed".format(self.package))
+                    pass
+        else:
+                try:
+                    self.dmakepkg()
+                    self.mvpkg()
+                    self.aur_push()
                 except RuntimeWarning:
                     print("Building of {0} failed".format(self.package))
                     pass
