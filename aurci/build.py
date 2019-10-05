@@ -6,7 +6,7 @@ def dmakepkg(package):
     path = "./packages/{0}/".format(package)
     if os.path.isfile(path + "PKGBUILD"):
         try:
-            subprocess.run(["dmakepkg", "-xy"], stdout=subprocess.DEVNULL, stderr=STDOUT, cwd=path, check=True)
+            subprocess.run(["dmakepkg", "-xy"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, cwd=path, check=True)
         except subprocess.CalledProcessError:
             with open("failed.txt", "w") as fobj:
                 fobj.write(package + "\n")
