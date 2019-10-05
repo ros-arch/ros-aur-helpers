@@ -13,7 +13,8 @@ def dmakepkg(package):
                 pass
     
 def build(package):
-    os.remove("failed.txt")
+    if os.path.exists("failed.txt"):
+        os.remove("failed.txt")
     if package=="all":
         for folder in os.listdir("./packages"):
             dmakepkg(folder)    
