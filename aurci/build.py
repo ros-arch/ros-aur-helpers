@@ -1,5 +1,7 @@
 import subprocess
 import os
+import glob
+import shutil
 
 class Packages:
     def __init__(self, package):
@@ -27,3 +29,15 @@ class Packages:
                 Packages(folder).dmakepkg()
         else:
             Packages(self.package).dmakepkg()
+
+    def mvpkg(self):
+        Packages(self.package).dmakepkg()
+        for pkg_path in glob.iglob(self.path + "/*pkg.tar*"):
+            shutil.copy(pkg_path, "./repository/")
+
+    def deploy(self):
+        if os.path.exists("failed.txt"):
+            os.remove("failed.txt")
+        if self.package=="all":
+            for folder in os.listdir("./packages"):
+                Packages(folder).mvpkg()

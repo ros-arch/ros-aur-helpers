@@ -7,7 +7,8 @@ from aurci.build import Packages
 def commands(option, package):
     args = {
         "clone"  : Clone(package).clone,
-        "build"  : Packages(package).build
+        "build"  : Packages(package).build,
+        "deploy" : Packages(package).deploy
     }
     args[option]()
 
@@ -15,7 +16,7 @@ def commands(option, package):
 def main(argv):
     parser=argparse.ArgumentParser(prog='dockerctl', add_help=True)
     
-    parser.add_argument('command', choices=['clone', 'build'])
+    parser.add_argument('command', choices=['clone', 'build', 'deploy'])
     parser.add_argument('package', type=str)
 
     args = parser.parse_args(argv)
