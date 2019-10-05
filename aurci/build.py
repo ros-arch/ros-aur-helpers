@@ -47,7 +47,7 @@ class Packages:
                 try:
                     Packages(self.package).dmakepkg()
                     Packages(folder).mvpkg()
-                    self.aur_push()
+                    Packages(folder).aur_push()
                 except RuntimeWarning:
                     print("Building of {0} failed".format(self.package))
                     pass
