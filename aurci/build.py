@@ -17,7 +17,7 @@ class Packages:
             except subprocess.CalledProcessError:
                 with open("failed.txt", "w") as fobj:
                     fobj.write(self.package + "\n")
-                    return 1
+                    raise RuntimeWarning("Building of {0} failed".format(self.package))
         else:
             raise BaseException("No PKBUILD existing: ", self.path)
 
@@ -31,7 +31,6 @@ class Packages:
             Packages(self.package).dmakepkg()
 
     def mvpkg(self):
-        Packages(self.package).dmakepkg()
         for pkg_path in glob.iglob(self.path + "/*pkg.tar*"):
             shutil.copy(pkg_path, "./repository/")
 
@@ -40,4 +39,9 @@ class Packages:
             os.remove("failed.txt")
         if self.package=="all":
             for folder in os.listdir("./packages"):
-                Packages(folder).mvpkg()
+                try:
+                    Packages(self.package).dmakepkg()
+                    Packages(folder).mvpkg()
+                except RuntimeWarning:
+                    print("Building of {0} failed".format(self.package))
+                    pass
