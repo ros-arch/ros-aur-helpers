@@ -1,7 +1,7 @@
 import subprocess
 import os
 
-class Build:
+class Packages:
     def __init__(self, package):
         self.package = package
         self.path = "./packages/{0}/".format(package)
@@ -24,6 +24,6 @@ class Build:
             os.remove("failed.txt")
         if self.package=="all":
             for folder in os.listdir("./packages"):
-                Build(folder).dmakepkg
+                Packages(folder).dmakepkg()
         else:
-            Build(self.package).dmakepkg()
+            Packages(self.package).dmakepkg()

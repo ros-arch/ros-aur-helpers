@@ -3,17 +3,21 @@ from git import Repo
 import os.path as p
 
 
-def cloning(repo_name):
-    url = "git@github.com:ros-melodic-arch/{0}.git".format(repo_name)
-    path = p.join("./packages/{0}".format(repo_name))
-    Repo.clone_from(url, path)
+class Clone:
+    def __init__(self, package):
+        self.package = package
+        self.path = p.join("./packages/{0}".format(self.package))
+        self.url = "git@github.com:ros-melodic-arch/{0}.git".format(self.package)
 
-def clone(package):
-    if package=="all":
-        g = Github("YOUR_OAUTH_KEY")
-        o = g.get_organization("ros-melodic-arch")
-        repos = o.get_repos(type="all", sort="full_name", direction="desc")
-        for repo in repos:
-            cloning(repo.name)
-    else:
-        cloning(package)
+    def cloning(self):
+        Repo.clone_from(self.url, self.path)
+
+    def clone(self):
+        if self.package=="all":
+            g = Github("YOUR_OAUTH_KEY")
+            o = g.get_organization("ros-melodic-arch")
+            repos = o.get_repos(type="all", sort="full_name", direction="desc")
+            for repo in repos:
+                Clone(repo.name).cloning()
+        else:
+            Clone(self.package).cloning()
