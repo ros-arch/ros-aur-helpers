@@ -14,7 +14,8 @@ class Packages:
         if os.path.isfile(self.path + "PKGBUILD"):
             try:
                 subprocess.run(["dmakepkg", "-xy"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, cwd=self.path, check=True)
-                return 0
+                with open("success.txt", "w") as fobj:
+                    fobj.write(self.package + "\n")
             except subprocess.CalledProcessError:
                 with open("failed.txt", "w") as fobj:
                     fobj.write(self.package + "\n")
@@ -47,11 +48,14 @@ class Packages:
             os.remove("failed.txt")
         if self.package=="all":
             for folder in os.listdir("./packages"):
-                try:
-                    Packages(folder).deploy()
-                except RuntimeWarning:
-                    print("Building of {0} failed".format(self.package))
+                if folder in open("success.txt"):
                     pass
+                else:
+                    try:
+                        Packages(folder).deploy()
+                    except RuntimeWarning:
+                        print("Building of {0} failed".format(self.package))
+                        pass
         else:
                 try:
                     self.dmakepkg()
