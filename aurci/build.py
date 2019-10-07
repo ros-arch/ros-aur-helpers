@@ -48,8 +48,8 @@ class Packages:
             os.remove("failed.txt")
         if self.package=="all":
             for folder in os.listdir("./packages"):
-                with open('success.txt') as fobj:
-                    if folder in fobj.read:
+                with open('success.txt', "r") as fobj:
+                    if folder in fobj.read():
                         pass
                     else:
                         try:
