@@ -57,10 +57,10 @@ class Packages:
                         print("Building of {0} failed".format(self.package))
                         pass
         else:
-                try:
-                    self.dmakepkg()
-                    self.mvpkg()
-                    self.aur_push()
-                except RuntimeWarning:
-                    print("Building of {0} failed".format(self.package))
-                    pass
+            try:
+                self.dmakepkg()
+                self.mvpkg()
+                self.aur_push()
+            except RuntimeWarning:
+                print("Building of {0} failed".format(self.package))
+                pass

@@ -20,4 +20,4 @@ class Clone:
             for repo in repos:
                 Clone(repo.name).cloning()
         else:
-            Clone(self.package).cloning()
+            self.cloning()
