@@ -14,10 +14,10 @@ class Packages:
         if os.path.isfile(self.path + "PKGBUILD"):
             try:
                 subprocess.run(["dmakepkg", "-xy"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, cwd=self.path, check=True)
-                with open("success.txt", "w") as fobj:
+                with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
             except subprocess.CalledProcessError:
-                with open("failed.txt", "w") as fobj:
+                with open("failed.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
                     raise RuntimeWarning("Building of {0} failed".format(self.package))
         else:
