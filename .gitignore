@@ -2,3 +2,5 @@
 */__pycache__/
 packages/
 repository/
+failed.txt
+success.txt
