@@ -48,14 +48,15 @@ class Packages:
             os.remove("failed.txt")
         if self.package=="all":
             for folder in os.listdir("./packages"):
-                if folder in open("success.txt"):
-                    pass
-                else:
-                    try:
-                        Packages(folder).deploy()
-                    except RuntimeWarning:
-                        print("Building of {0} failed".format(self.package))
+                with open('success.txt') as fobj:
+                    if folder in fobj.read:
                         pass
+                    else:
+                        try:
+                            Packages(folder).deploy()
+                        except RuntimeWarning:
+                            print("Building of {0} failed".format(self.package))
+                            pass
         else:
             try:
                 self.dmakepkg()
