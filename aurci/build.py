@@ -41,7 +41,7 @@ class Packages:
             pkg_repo = Repo(path=self.path).remote(name='aur')
         except ValueError:
             pkg_repo = Repo(path=self.path).create_remote('aur', "aur@aur.archlinux.org:/{0}.git".format(self.package))
-        pkg_repo.push
+        pkg_repo.push()
 
     def deploy(self):
         if os.path.exists("failed.txt"):
