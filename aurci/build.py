@@ -17,6 +17,7 @@ class Packages:
                 with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
                 print("Building of {0} finished".format(self.package))
+                subprocess.run(["sed", "-i", "'/{0}/d'".format(self.package), "failed.txt"])
             except subprocess.CalledProcessError:
                 with open("failed.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
@@ -25,8 +26,6 @@ class Packages:
             raise BaseException("No PKBUILD existing: ", self.path)
 
     def build(self):
-        if os.path.exists("failed.txt"):
-            os.remove("failed.txt")
         if self.package=="all":
             for folder in os.listdir("./packages"):
                 Packages(folder).dmakepkg()
@@ -46,8 +45,6 @@ class Packages:
         pkg_repo.push()
 
     def deploy(self):
-        if os.path.exists("failed.txt"):
-            os.remove("failed.txt")
         if self.package=="all":
             for folder in os.listdir("./packages"):
                 with open('success.txt', "r") as fobj:
