@@ -14,7 +14,7 @@ def commands(option, package):
 
 
 def main(argv):
-    parser=argparse.ArgumentParser(prog='dockerctl', add_help=True)
+    parser=argparse.ArgumentParser(prog='aurci', add_help=True)
     
     parser.add_argument('command', choices=['clone', 'build', 'deploy'])
     parser.add_argument('package', type=str)
