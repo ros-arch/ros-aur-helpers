@@ -21,7 +21,7 @@ class Packages:
             except subprocess.CalledProcessError:
                 with open("failed.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
-                    raise RuntimeWarning("Building of {0} failed".format(self.package))
+                raise RuntimeWarning("Building of {0} failed".format(self.package))
         else:
             raise BaseException("No PKBUILD existing: ", self.path)
 
