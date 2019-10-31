@@ -16,10 +16,8 @@ class Packages:
     def dmakepkg(self):
         if os.path.isfile(self.path + "PKGBUILD"):
             try:
-                subprocess.run(["dmakepkg", "-xy"], stdout=(subprocess.PIPE if self.verbosity else subprocess.DEVNULL), \
+                subprocess.run(["dmakepkg", "-xy"], stdout=( None if self.verbosity else subprocess.DEVNULL), \
                      stderr=subprocess.STDOUT, cwd=self.path, check=True)
-                if self.verbosity:
-                    subprocess.Popen.communicate
                 with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
                 if self.output:
