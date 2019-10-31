@@ -4,10 +4,12 @@ import os.path as p
 
 
 class Clone:
-    def __init__(self, package):
+    def __init__(self, package, verbosity, output):
         self.package = package
         self.path = p.join("./packages/{0}".format(self.package))
         self.url = "git@github.com:ros-melodic-arch/{0}.git".format(self.package)
+        self.verbosity = verbosity
+        self.output = output
 
     def cloning(self):
         Repo.clone_from(self.url, self.path)

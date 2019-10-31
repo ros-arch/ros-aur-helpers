@@ -6,18 +6,24 @@ from git import Repo
 from aurci.sed import Sed
 
 class Packages:
-    def __init__(self, package):
+    def __init__(self, package, verbosity, output):
         self.package = package
         self.path = "./packages/{0}/".format(package)
+        self.verbosity = verbosity
+        self.output = output
 
 
     def dmakepkg(self):
         if os.path.isfile(self.path + "PKGBUILD"):
             try:
-                subprocess.run(["dmakepkg", "-xy"], stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT, cwd=self.path, check=True)
+                subprocess.run(["dmakepkg", "-xy"], stdout=(subprocess.PIPE if self.verbosity else subprocess.DEVNULL), \
+                     stderr=subprocess.STDOUT, cwd=self.path, check=True)
+                if self.verbosity:
+                    subprocess.Popen.communicate
                 with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
-                print("Building of {0} finished".format(self.package))
+                if self.output:
+                    print("Building of {0} finished".format(self.package))
                 Sed("failed.txt", self.package).del_lines()
                 
             except subprocess.CalledProcessError:
@@ -54,7 +60,7 @@ class Packages:
                         pass
                     else:
                         try:
-                            Packages(folder).deploy()
+                            Packages(folder, self.verbosity, self.output).deploy()
                         except RuntimeWarning:
                             print("Building of {0} failed".format(self.package))
                             pass
@@ -64,5 +70,6 @@ class Packages:
                 self.mvpkg()
                 self.aur_push()
             except RuntimeWarning:
-                print("Building of {0} failed".format(self.package))
+                if self.output:
+                    print("Building of {0} failed".format(self.package))
                 pass
