@@ -34,13 +34,13 @@ class Packages:
     def build(self):
         if self.package=="all":
             for folder in os.listdir("./packages"):
-                Packages(folder).dmakepkg()
+                Packages(folder, self.verbosity, self.output).dmakepkg()
         else:
             self.dmakepkg()
 
     def mvpkg(self):
         for pkg_path in glob.iglob(self.path + "/*pkg.tar*"):
-            shutil.copy(pkg_path, "./repository/")
+            shutil.move(pkg_path, "./repository/")
     
     def aur_push(self):
         try:

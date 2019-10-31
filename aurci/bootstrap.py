@@ -1,12 +1,13 @@
 from github import Github
 from git import Repo
-import os.path as p
+from aurci.sed import Sed
+import os
 
 
 class Clone:
     def __init__(self, package, verbosity, output):
         self.package = package
-        self.path = p.join("./packages/{0}".format(self.package))
+        self.path = os.path.join("./packages/{0}".format(self.package))
         self.url = "git@github.com:ros-melodic-arch/{0}.git".format(self.package)
         self.verbosity = verbosity
         self.output = output
@@ -20,6 +21,22 @@ class Clone:
             o = g.get_organization("ros-melodic-arch")
             repos = o.get_repos(type="all", sort="full_name", direction="desc")
             for repo in repos:
-                Clone(repo.name).cloning()
+                Clone(repo.name, self.verbosity, self.output).cloning()
         else:
             self.cloning()
+
+
+class Pull:
+    def __init__(self, package, verbosity, output):
+        self.package = package
+        self.path = "./packages/{0}/".format(package)
+        self.verbosity = verbosity
+        self.output = output
+
+    def pull(self):
+        if self.package=="all":
+            for folder in os.listdir("./packages"):
+                Pull(folder, self.verbosity, self.output).pull()
+        else:
+            Repo(path=self.path).remote("origin").pull()
+            Sed("success.txt", self.package).del_lines()
