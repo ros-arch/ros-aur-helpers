@@ -12,5 +12,5 @@ class Sed:
     def replace_string(self, arg2):
         subprocess.run(["sed", "-i", "s!{0}!{1}!".format(self.arg1, arg2), self.path])
 
-    def replace_string_g(self, arg2):
+    def replace_string_global(self, arg2):
         subprocess.run(["sed", "-i", '%s!{0}!{1}!g'.format(self.arg1, arg2), self.path])
