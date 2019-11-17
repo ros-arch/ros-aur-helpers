@@ -7,7 +7,7 @@ class Sed:
         self.arg1 = arg1
 
     def del_lines(self):
-        subprocess.run(["sed", "-i", "'!{0}!d'".format(self.arg1), self.path])
+        subprocess.run(["sed", "-i", "!{0}!d".format(self.arg1), self.path])
 
     def replace_string(self, arg2):
         subprocess.run(["sed", "-i", "s!{0}!{1}!".format(self.arg1, arg2), self.path])
