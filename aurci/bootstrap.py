@@ -38,5 +38,7 @@ class Pull:
             for folder in os.listdir("./packages"):
                 Pull(folder, self.verbosity, self.output).pull()
         else:
+            Repo(path=self.path).git.stash()
+            Repo(path=self.path).git.stash("clear")
             Repo(path=self.path).remote("origin").pull()
             Sed("success.txt", self.package).del_lines()
