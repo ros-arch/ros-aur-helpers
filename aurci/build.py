@@ -52,6 +52,7 @@ class Packages:
 
     def deploy(self):
         if self.package=="all":
+            os.remove("failed.txt")
             for folder in os.listdir("./packages"):
                 with open('success.txt', "r") as fobj:
                     if folder in fobj.read():
