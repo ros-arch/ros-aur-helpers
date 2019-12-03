@@ -3,7 +3,7 @@ import os
 import glob
 import shutil
 from git import Repo
-from aurci.sed import Sed
+import sed
 
 class Packages:
     def __init__(self, package, verbosity, output):
@@ -22,7 +22,7 @@ class Packages:
                     fobj.write(self.package + "\n")
                 if self.output:
                     print("Building of {0} finished".format(self.package))
-                Sed("failed.txt", self.package).del_lines()
+                sed.rmlinematch(self.package, "failed.txt", dryrun=False)
                 
             except subprocess.CalledProcessError:
                 with open("failed.txt", "a") as fobj:

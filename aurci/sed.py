@@ -1,16 +1,71 @@
-import subprocess
+#!/usr/bin/env python3
+__author__ = 'Mahmoud Adel <mahmoud.adel2@gmail.com>'
+__version__ = 0.4
+__license__ = "The MIT License (MIT)"
 
+import re
 
-class Sed:
-    def __init__(self, path, arg1):
-        self.path = path
-        self.arg1 = arg1
+def replace(oldstr, newstr, infile, dryrun=False):
+    '''
+    Sed-like Replace function..
+    Usage: pysed.replace(<Old string>, <Replacement String>, <Text File>)
+    Example: pysed.replace('xyz', 'XYZ', '/path/to/file.txt')
+    Example 'DRYRUN': pysed.replace('xyz', 'XYZ', '/path/to/file.txt', dryrun=True) #This will dump the output to STDOUT instead of changing the input file.
+    '''
+    linelist = []
+    with open(infile) as f:
+        for item in f:
+            newitem = re.sub(oldstr, newstr, item)
+            linelist.append(newitem)
+    if dryrun == False:
+        with open(infile, "w") as f:
+            f.truncate()
+            for line in linelist: f.writelines(line)
+    elif dryrun == True:
+        for line in linelist: print(line, end='')
+    else:
+        exit("Unknown option specified to 'dryrun' argument, Usage: dryrun=<True|False>.")
 
-    def del_lines(self):
-        subprocess.run(["sed", "-i", "!{0}!d".format(self.arg1), self.path])
+def rmlinematch(oldstr, infile, dryrun=False):
+    '''
+    Sed-like line deletion function based on given string..
+    Usage: pysed.rmlinematch(<Unwanted string>, <Text File>)
+    Example: pysed.rmlinematch('xyz', '/path/to/file.txt')
+    Example 'DRYRUN': pysed.rmlinematch('xyz', '/path/to/file.txt', dryrun=True) #This will dump the output to STDOUT instead of changing the input file.
+    '''
+    linelist = []
+    with open(infile) as f:
+        for item in f:
+            rmitem = re.match(r'.*{}'.format(oldstr), item)
+            if type(rmitem) == type(None): linelist.append(item)
+    if dryrun == False:
+        with open(infile, "w") as f:
+            f.truncate()
+            for line in linelist: f.writelines(line)
+    elif dryrun == True:
+        for line in linelist: print(line, end='')
+    else:
+        exit("Unknown option specified to 'dryrun' argument, Usage: dryrun=<True|False>.")
 
-    def replace_string(self, arg2):
-        subprocess.run(["sed", "-i", "s!{0}!{1}!".format(self.arg1, arg2), self.path])
-
-    def replace_string_global(self, arg2):
-        subprocess.run(["sed", "-i", '%s!{0}!{1}!g'.format(self.arg1, arg2), self.path])
+def rmlinenumber(linenumber, infile, dryrun=False):
+    '''
+    Sed-like line deletion function based on given line number..
+    Usage: pysed.rmlinenumber(<Unwanted Line Number>, <Text File>)
+    Example: pysed.rmlinenumber(10, '/path/to/file.txt')
+    Example 'DRYRUN': pysed.rmlinenumber(10, '/path/to/file.txt', dryrun=True) #This will dump the output to STDOUT instead of changing the input file.
+    '''
+    linelist = []
+    linecounter = 0
+    if type(linenumber) != type(linecounter): exit("'linenumber' argument must be an integer.")
+    with open(infile) as f:
+        for item in f:
+            linecounter = linecounter + 1
+            if linecounter != linenumber: linelist.append(item)
+    if dryrun == False:
+        with open(infile, "w") as f:
+            f.truncate()
+            for line in linelist: f.writelines(line)
+    elif dryrun == True:
+        for line in linelist: print(line, end='')
+    else:
+        exit("Unknown option specified to 'dryrun' argument, Usage: dryrun=<True|False>.")

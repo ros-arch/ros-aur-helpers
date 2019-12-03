@@ -1,6 +1,6 @@
 from github import Github
 from git import Repo
-from aurci.sed import Sed
+import sed
 import os
 
 
@@ -41,4 +41,4 @@ class Pull:
             Repo(path=self.path).git.stash()
             Repo(path=self.path).git.stash("clear")
             Repo(path=self.path).remote("origin").pull()
-            Sed("success.txt", self.package).del_lines()
+            sed.rmlinematch(self.package, "success.txt", dryrun=False)
