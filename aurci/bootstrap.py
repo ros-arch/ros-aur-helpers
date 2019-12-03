@@ -1,6 +1,6 @@
 from github import Github
 from git import Repo
-import sed
+from aurci import sed
 import os
 
 

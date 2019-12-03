@@ -3,7 +3,7 @@ import os
 import glob
 import shutil
 from git import Repo
-import sed
+from aurci import sed
 
 class Packages:
     def __init__(self, package, verbosity, output):
