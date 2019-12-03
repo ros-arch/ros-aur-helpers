@@ -48,7 +48,10 @@ class Packages:
         except ValueError:
             pkg_repo = Repo(path=self.path).create_remote('aur', "aur@aur.archlinux.org:/{0}.git".format(self.package))
         pkg_repo.fetch()
-        pkg_repo.push()
+        try:
+            pkg_repo.push()
+        except git.exec.GitCommandError:
+            pass
 
     def deploy(self):
         if self.package=="all":
