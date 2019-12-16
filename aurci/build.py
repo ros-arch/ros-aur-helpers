@@ -11,6 +11,8 @@ class Packages:
         self.path = "./packages/{0}/".format(package)
         self.verbosity = verbosity
         self.output = output
+        self.FAILED_FILE = "failed.txt"
+        self.SUCCESS_FILE = "success.txt"
 
 
     def dmakepkg(self):
@@ -55,9 +57,10 @@ class Packages:
 
     def deploy(self):
         if self.package=="all":
-            os.remove("failed.txt")
+            os.remove(self.FAILED_FILE)
+            os.mknod(self.FAILED_FILE)
             for folder in os.listdir("./packages"):
-                with open('success.txt', "r") as fobj:
+                with open(self.SUCCESS_FILE, "r") as fobj:
                     if folder in fobj.read():
                         pass
                     else:
