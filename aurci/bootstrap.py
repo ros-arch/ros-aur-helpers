@@ -40,5 +40,11 @@ class Pull:
         else:
             Repo(path=self.path).git.stash()
             Repo(path=self.path).git.stash("clear")
-            Repo(path=self.path).remote("origin").pull()
+            try:
+                Repo(path=self.path).remote("origin").pull()
+            except git.exec.GitCommandError:
+                if self.output:
+                    print("Pulling of {0} failed".format(self.package))
+                    pass
+
             sed.rmlinematch(self.package, "success.txt", dryrun=False)
