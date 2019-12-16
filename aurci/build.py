@@ -53,6 +53,8 @@ class Packages:
         try:
             pkg_repo.push()
         except git.exec.GitCommandError:
+            if(self.output):
+                print("Push failed, aur remote is broken")
             pass
 
     def deploy(self):
