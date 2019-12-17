@@ -52,7 +52,7 @@ class Packages:
         pkg_repo.fetch()
         try:
             pkg_repo.push()
-        except Repo.git.exc.GitCommandError:
+        except:
             if self.output:
                 print("Push failed, aur remote is broken")
             pass

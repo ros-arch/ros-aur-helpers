@@ -42,7 +42,7 @@ class Pull:
             Repo(path=self.path).git.stash("clear")
             try:
                 Repo(path=self.path).remote("origin").pull()
-            except Repo.git.exc.GitCommandError:
+            except:
                 if self.output:
                     print("Pulling of {0} failed".format(self.package))
                     pass
