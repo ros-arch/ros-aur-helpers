@@ -41,7 +41,7 @@ class Update:
             if pkgver:
                 pkgver = pkgver.split('-')[0]
             if 'github' in src:
-                dl = 'https://github.com/' + target + '/archive/' + pkgver + '.tar.gz' \
+                dl = 'https://github.com/' + target + '/archive/${pkgver}.tar.gz' \
                     if pkgver else None
             else:
                 dl = None
@@ -79,8 +79,6 @@ class Update:
         new_dir = '_dir="{}-${{pkgver}}{}"'.format(package_info['repo'],
                     '/{}'.format(self.package) if package_info['siblings'] else '')
         new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(package_info['dl'])
-
-        print(new_pkgver + new_dir + new_src, end='\n')
 
         if old_pkgver == new_pkgver and old_dir == new_dir and old_src == new_src:
             print('already matches: {}'.format(self.package))
