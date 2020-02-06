@@ -63,8 +63,8 @@ class Update:
 
         old_pkgver = re.findall(r"^pkgver=.*", open('PKGBUILD').read(), re.MULTILINE)
         old_dir = re.findall(r"^_dir=.*", open('PKGBUILD').read(), re.MULTILINE)
-        old_src = re.findall(r"^source=\(.*\)", open('PKGBUILD').read(), re.MULTILINE)
-        old_sha = re.findall(r"^sha256sums=\(.*\)", open('PKGBUILD').read(), re.MULTILINE)
+        old_src = re.findall(r"^source=\(.*\"", open('PKGBUILD').read(), re.MULTILINE)
+        old_sha = re.findall(r"^sha256sums=\(.*\'", open('PKGBUILD').read(), re.MULTILINE)
 
         if all((old_dir, old_src, old_sha, old_pkgver)):
             old_pkgver = old_pkgver[0]
@@ -72,13 +72,13 @@ class Update:
             old_src = old_src[0]
             old_sha = old_sha[0]
         else:
-            print(old_pkgver)
-            raise RuntimeError('getting PKGBUILD lines failed: {}'.format(self.package))
+            raise RuntimeError('getting PKGBUILD lines failed: {}'.format(self.package) + "\n \
+                                Maybe diffrent quotes than needed for regex?")
 
         new_pkgver = "pkgver='{}'".format(package_info['pkgver'])
         new_dir = '_dir="{}-${{pkgver}}{}"'.format(package_info['repo'],
                     '/{}'.format(self.package) if package_info['siblings'] else '')
-        new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}")'.format(package_info['dl'])
+        new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(package_info['dl'])
 
         print(new_pkgver + new_dir + new_src, end='\n')
 
@@ -94,7 +94,7 @@ class Update:
             print('download failed: {}'.format(self.package))
     
         sha256 = subprocess.run(['sha256sum', fname], check=True, capture_output=True)
-        new_sha = "sha256sums=('{}')".format(sha256.stdout.decode('utf-8').split(' ')[0])
+        new_sha = "sha256sums=('{}'".format(sha256.stdout.decode('utf-8').split(' ')[0])
         os.remove(fname)
 
         with open('PKGBUILD', 'r') as f:
