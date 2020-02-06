@@ -13,8 +13,6 @@ class Update:
         self.package = package
         self.verbosity = verbosity
         self.output = output
-        # a github token for authentication, otherwise calls are throttled
-        self.gh_oauth = 'YOUR_OAUTH_KEY'
         self.rosdistro_url = \
             'https://raw.githubusercontent.com/ros/rosdistro/master/melodic/distribution.yaml'
         # packages that are missing information or are special cases
@@ -90,7 +88,7 @@ class Update:
             urllib.request.urlretrieve(package_info['dl'], fname)
         except urllib.error.HTTPError:
             print('download failed: {}'.format(self.package))
-    
+
         sha256 = subprocess.run(['sha256sum', fname], check=True, capture_output=True)
         new_sha = "sha256sums=('{}'".format(sha256.stdout.decode('utf-8').split(' ')[0])
         os.remove(fname)
