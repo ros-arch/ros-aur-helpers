@@ -51,6 +51,7 @@ class Update:
                                      'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl}
         return ros_dict
 
+
     def update_pkgbuild(self):
         os.chdir(os.path.join("./packages", self.package))
         #Handling of missin vars
@@ -84,10 +85,11 @@ class Update:
 
         print('starting: {}'.format(self.package))
         fname = '{}-{}.tar.gz'.format(self.package, package_info['pkgver'])
+        #Trying to download tar archive to generate checksum
         try:
             urllib.request.urlretrieve(package_info['dl'], fname)
         except urllib.error.HTTPError:
-            print('download failed: {}'.format(self.package))
+            raise RuntimeError('download failed: {}'.format(self.package))
 
         sha256 = subprocess.run(['sha256sum', fname], check=True, capture_output=True)
         new_sha = "sha256sums=('{}'".format(sha256.stdout.decode('utf-8').split(' ')[0])
