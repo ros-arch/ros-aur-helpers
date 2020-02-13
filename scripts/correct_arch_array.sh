@@ -13,7 +13,8 @@ do
 		makepkg --printsrcinfo > .SRCINFO
 		git add PKGBUILD .SRCINFO
 		git commit -m "Fixed arch=() array"
-		git push origin master;
+		git push origin master
+		cd --;
 	else
 		echo "$i does NOT contain c++ code";
 	fi
