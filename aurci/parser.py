@@ -7,13 +7,14 @@ from aurci.update import Update
 
 def commands(option, package, verbosity, output):
     args = {
-        "clone"  : Clone(package, verbosity, output).clone,
-        "pull"   : Pull(package, verbosity, output).pull,
-        "build"  : Packages(package, verbosity, output).build,
-        "deploy" : Packages(package, verbosity, output).deploy,
-        "update" : Update(package, verbosity, output).update_pkgbuild
+        "clone"  : (Clone, "clone"),
+        "pull"   : (Pull, "pull"),
+        "build"  : (Packages, "build"),
+        "deploy" : (Packages, "deploy"),
+        "update" : (Update, "update_pkgbuild")
     }
-    args[option]()
+    command_class = args[option]
+    getattr(command_class[0](package, verbosity, output), command_class[1])()
 
 
 def main(argv):
