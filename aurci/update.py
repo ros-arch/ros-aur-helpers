@@ -39,8 +39,9 @@ class Update:
             if pkgver:
                 pkgver = pkgver.split('-')[0]
             if 'github' in src:
-                dl = 'https://github.com/' + target + '/archive/${pkgver}.tar.gz' \
+                dl = 'https://github.com/' + target + '/archive/' + pkgver +'.tar.gz' \
                     if pkgver else None
+                url = 'https://github.com/' + target + '/archive/${pkgver}.tar.gz'
             else:
                 dl = None
             pkg_list = d.get('release', {'packages': [repo]}).get('packages', [repo])
@@ -48,7 +49,7 @@ class Update:
                 siblings = len(pkg_list)-1
                 pkgname = 'ros-melodic-{}'.format(re.sub('_', '-', pkg))
                 ros_dict[pkgname] = {'repo': repo, 'siblings': siblings,
-                                     'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl}
+                                     'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl, 'url': url}
         return ros_dict
 
 
@@ -77,7 +78,7 @@ class Update:
         new_pkgver = "pkgver='{}'".format(package_info['pkgver'])
         new_dir = '_dir="{}-${{pkgver}}{}"'.format(package_info['repo'],
                     '/{}'.format(self.package) if package_info['siblings'] else '')
-        new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(package_info['dl'])
+        new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(package_info['url'])
 
         if old_pkgver == new_pkgver and old_dir == new_dir and old_src == new_src:
             print('already matches: {}'.format(self.package))
