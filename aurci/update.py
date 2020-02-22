@@ -48,7 +48,7 @@ class Update:
             for pkg in pkg_list:
                 siblings = len(pkg_list)-1
                 pkgname = 'ros-melodic-{}'.format(re.sub('_', '-', pkg))
-                ros_dict[pkgname] = {'repo': repo, 'siblings': siblings,
+                ros_dict[pkgname] = {'repo': repo, 'siblings': siblings, 'orig_name': pkg,
                                      'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl, 'url': url}
         return ros_dict
 
@@ -77,7 +77,7 @@ class Update:
 
         new_pkgver = "pkgver='{}'".format(package_info['pkgver'])
         new_dir = '_dir="{}-${{pkgver}}{}"'.format(package_info['repo'],
-                    '/{}'.format(self.package) if package_info['siblings'] else '')
+                    '/{}'.format(package_info['orig_name']) if package_info['siblings'] else '')
         new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(package_info['url'])
 
         if old_pkgver == new_pkgver and old_dir == new_dir and old_src == new_src:
