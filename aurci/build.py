@@ -6,13 +6,15 @@ from git import Repo
 from aurci import sed
 
 class Packages:
+
+    FAILED_FILE = "failed.txt"
+    SUCCESS_FILE = "success.txt"
+
     def __init__(self, package, verbosity, output):
         self.package = package
         self.path = "./packages/{0}/".format(package)
         self.verbosity = verbosity
         self.output = output
-        self.FAILED_FILE = "failed.txt"
-        self.SUCCESS_FILE = "success.txt"
 
 
     def dmakepkg(self):
