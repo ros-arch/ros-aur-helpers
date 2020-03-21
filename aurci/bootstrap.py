@@ -45,6 +45,5 @@ class Pull:
             except:
                 if self.output:
                     print("Pulling of {0} failed".format(self.package))
-                    pass
 
             sed.rmlinematch(self.package, "success.txt", dryrun=False)

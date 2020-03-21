@@ -25,7 +25,7 @@ class Packages:
                 if self.output:
                     print("Building of {0} finished".format(self.package))
                 sed.rmlinematch(self.package, "failed.txt", dryrun=False)
-                
+
             except subprocess.CalledProcessError:
                 with open("failed.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
@@ -43,7 +43,7 @@ class Packages:
     def mvpkg(self):
         for pkg_path in glob.iglob(self.path + "/*pkg.tar*"):
             shutil.move(pkg_path, "./repository/")
-    
+
     def aur_push(self):
         try:
             pkg_repo = Repo(path=self.path).remote(name='aur')
@@ -55,7 +55,6 @@ class Packages:
         except:
             if self.output:
                 print("Push failed, aur remote is broken")
-            pass
 
     def deploy(self):
         if self.package=="all":
