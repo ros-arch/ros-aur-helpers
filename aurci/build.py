@@ -43,7 +43,7 @@ class Packages:
             self.dmakepkg()
 
     def del_old_pkg(self):
-        for pkg in glob.iglob(".repository/*{0}*.pkg.tar.*".format(self.package)):
+        for pkg in glob.iglob("./repository/*{0}*.pkg.tar.*".format(self.package)):
             os.remove(pkg)
 
     def mvpkg(self):
