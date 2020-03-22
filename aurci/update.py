@@ -9,17 +9,18 @@ import yaml
 
 class Update:
 
+    rosdistro_url = \
+        'https://raw.githubusercontent.com/ros/rosdistro/master/melodic/distribution.yaml'
+    # packages that are missing information or are special cases
+    skip = ['fcl', 'libviso2', 'viso2_ros', 'opencv3', 'roscpp_git', 'message_filters_git',
+        'ivcon', 'stage', 'nodelet_tutorial_math', 'common_tutorials',
+        'turtle_actionlib', 'pluginlib_tutorials', 'rosbag_migration_rule',
+        'actionlib_tutorials', 'ompl', 'bfl', 'convex_decomposition', 'mavlink']
+
     def __init__(self, package, verbosity, output):
         self.package = package
         self.verbosity = verbosity
         self.output = output
-        self.rosdistro_url = \
-            'https://raw.githubusercontent.com/ros/rosdistro/master/melodic/distribution.yaml'
-        # packages that are missing information or are special cases
-        self.skip = ['fcl', 'libviso2', 'viso2_ros', 'opencv3', 'roscpp_git', 'message_filters_git',
-                     'ivcon', 'stage', 'nodelet_tutorial_math', 'common_tutorials',
-                     'turtle_actionlib', 'pluginlib_tutorials', 'rosbag_migration_rule',
-                     'actionlib_tutorials', 'ompl', 'bfl', 'convex_decomposition', 'mavlink']
         self.metainfo_dict = self.build_metainfo_dict()
 
 
