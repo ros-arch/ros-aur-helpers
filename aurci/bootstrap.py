@@ -1,16 +1,13 @@
 from github import Github
 from git import Repo
-from aurci import sed
+from aurci.general import Routines
 import os
 
 
-class Clone:
+class Clone(Routines):
     def __init__(self, package, verbosity, output):
-        self.package = package
-        self.path = os.path.join("./packages/{0}".format(self.package))
+        Routines.__init__(self, package, verbosity, output)
         self.url = "git@github.com:ros-melodic-arch/{0}.git".format(self.package)
-        self.verbosity = verbosity
-        self.output = output
 
     def cloning(self):
         Repo.clone_from(self.url, self.path)
@@ -26,12 +23,7 @@ class Clone:
             self.cloning()
 
 
-class Pull:
-    def __init__(self, package, verbosity, output):
-        self.package = package
-        self.path = "./packages/{0}/".format(package)
-        self.verbosity = verbosity
-        self.output = output
+class Pull(Routines):
 
     def pull(self):
         if self.package=="all":
