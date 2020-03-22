@@ -1,4 +1,5 @@
 from PythonSed import Sed, SedException
+from github import Github
 import os
 import requests
 import yaml
@@ -11,6 +12,8 @@ class Routines:
         self.verbosity = verbosity
         self.output = output
         self.path = os.path.join("./packages/{0}".format(self.package))
+        g = Github("YOUR_OATH_KEY")
+        self.gh_organization = g.get_organization("ros-melodic-arch")
 
     def delete_package_line(self, file):
         sed = Sed()

@@ -14,9 +14,7 @@ class Clone(Routines):
 
     def clone(self):
         if self.package=="all":
-            g = Github("YOUR_OAUTH_KEY")
-            o = g.get_organization("ros-melodic-arch")
-            repos = o.get_repos(type="all", sort="full_name", direction="desc")
+            repos = self.gh_organization.get_repos(type="all", sort="full_name", direction="desc")
             for repo in repos:
                 Clone(repo.name, self.verbosity, self.output).cloning()
         else:
