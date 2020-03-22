@@ -42,6 +42,10 @@ class Packages:
         else:
             self.dmakepkg()
 
+    def del_old_pkg(self):
+        for pkg in glob.iglob(".repository/*{0}*.pkg.tar.*".format(self.package)):
+            os.remove(pkg)
+
     def mvpkg(self):
         for pkg_path in glob.iglob(self.path + "/*pkg.tar*"):
             shutil.move(pkg_path, "./repository/")
@@ -75,6 +79,7 @@ class Packages:
         else:
             try:
                 self.dmakepkg()
+                self.del_old_pkg()
                 self.mvpkg()
                 self.aur_push()
             except RuntimeWarning:
