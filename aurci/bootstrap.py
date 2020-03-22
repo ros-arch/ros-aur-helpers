@@ -38,12 +38,14 @@ class Pull:
             for folder in os.listdir("./packages"):
                 Pull(folder, self.verbosity, self.output).pull()
         else:
-            Repo(path=self.path).git.stash()
-            Repo(path=self.path).git.stash("clear")
+            repo = Repo(path=self.path)
+            repo.git.stash()
+            repo.git.stash("clear")
+            head_before = repo.head.object.hexsha
             try:
-                Repo(path=self.path).remote("origin").pull()
+                repo.remote("origin").pull()
+                if head_before != repo.head.object.hexsha:
+                    sed.rmlinematch(self.package, "success.txt", dryrun=False)
             except:
                 if self.output:
                     print("Pulling of {0} failed".format(self.package))
-
-            sed.rmlinematch(self.package, "success.txt", dryrun=False)
