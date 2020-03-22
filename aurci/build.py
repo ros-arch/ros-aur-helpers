@@ -47,9 +47,11 @@ class Packages(Routines):
         pkg_repo.fetch()
         try:
             pkg_repo.push()
-        except:
+        except BaseException as e:
             if self.output:
                 print("Push failed, aur remote is broken")
+                if self.verbosity:
+                    print(e)
 
     def deploy(self):
         if self.package=="all":

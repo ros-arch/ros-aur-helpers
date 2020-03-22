@@ -38,6 +38,8 @@ class Pull(Routines):
                 repo.remote("origin").pull()
                 if head_before != repo.head.object.hexsha:
                     self.delete_package_line("success.txt")
-            except:
+            except BaseException as e:
                 if self.output:
                     print("Pulling of {0} failed".format(self.package))
+                    if self.verbosity:
+                        print(e)
