@@ -19,7 +19,7 @@ class Packages(Routines):
                     fobj.write(self.package + "\n")
                 if self.output:
                     print("Building of {0} finished".format(self.package))
-                sed.rmlinematch(self.package, "failed.txt", dryrun=False)
+                self.delete_package_line(self.FAILED_FILE)
 
             except subprocess.CalledProcessError:
                 with open("failed.txt", "a") as fobj:

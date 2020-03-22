@@ -37,5 +37,4 @@ class Pull(Routines):
             except:
                 if self.output:
                     print("Pulling of {0} failed".format(self.package))
-
-            sed.rmlinematch(self.package, "success.txt", dryrun=False)
+            self.delete_package_line("success.txt")
