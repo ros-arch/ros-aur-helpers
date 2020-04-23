@@ -4,6 +4,7 @@ import os
 import requests
 import yaml
 import re
+import configparser
 
 class Routines:
 
@@ -12,8 +13,10 @@ class Routines:
         self.verbosity = verbosity
         self.output = output
         self.path = os.path.join("./packages/{0}".format(self.package))
-        g = Github("YOUR_OATH_KEY")
-        self.gh_organization = g.get_organization("ros-melodic-arch")
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        g = Github(config['CI']['GH_OAUTH_TOKEN'])
+        self.gh_organization = g.get_organization(config['CI']['GH_ORGANIZATION'])
 
     def delete_package_line(self, file):
         sed = Sed()
