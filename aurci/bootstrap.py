@@ -1,4 +1,3 @@
-from github import Github
 from git import Repo
 from aurci.general import Routines
 import os
