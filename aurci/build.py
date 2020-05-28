@@ -3,19 +3,12 @@ import os
 import glob
 import shutil
 from git import Repo
-from aurci import sed
+from aurci.general import Routines
 
-class Packages:
+class Packages(Routines):
 
     FAILED_FILE = "failed.txt"
     SUCCESS_FILE = "success.txt"
-
-    def __init__(self, package, verbosity, output):
-        self.package = package
-        self.path = "./packages/{0}/".format(package)
-        self.verbosity = verbosity
-        self.output = output
-
 
     def dmakepkg(self):
         if os.path.isfile(self.path + "PKGBUILD"):
@@ -26,7 +19,7 @@ class Packages:
                     fobj.write(self.package + "\n")
                 if self.output:
                     print("Building of {0} finished".format(self.package))
-                sed.rmlinematch(self.package, "failed.txt", dryrun=False)
+                self.delete_package_line(self.FAILED_FILE)
 
             except subprocess.CalledProcessError:
                 with open("failed.txt", "a") as fobj:
@@ -58,9 +51,11 @@ class Packages:
         pkg_repo.fetch()
         try:
             pkg_repo.push()
-        except:
+        except BaseException as e:
             if self.output:
                 print("Push failed, aur remote is broken")
+                if self.verbosity:
+                    print(e)
 
     def deploy(self):
         if self.package=="all":
@@ -75,7 +70,6 @@ class Packages:
                             Packages(folder, self.verbosity, self.output).deploy()
                         except RuntimeWarning:
                             print("Building of {0} failed".format(self.package))
-                            pass
         else:
             try:
                 self.dmakepkg()
@@ -85,4 +79,3 @@ class Packages:
             except RuntimeWarning:
                 if self.output:
                     print("Building of {0} failed".format(self.package))
-                pass

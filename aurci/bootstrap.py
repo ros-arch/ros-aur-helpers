@@ -1,37 +1,26 @@
-from github import Github
 from git import Repo
-from aurci import sed
+from aurci.general import Routines
 import os
 
 
-class Clone:
+class Clone(Routines):
     def __init__(self, package, verbosity, output):
-        self.package = package
-        self.path = os.path.join("./packages/{0}".format(self.package))
+        Routines.__init__(self, package, verbosity, output)
         self.url = "git@github.com:ros-melodic-arch/{0}.git".format(self.package)
-        self.verbosity = verbosity
-        self.output = output
 
     def cloning(self):
         Repo.clone_from(self.url, self.path)
 
     def clone(self):
         if self.package=="all":
-            g = Github("YOUR_OAUTH_KEY")
-            o = g.get_organization("ros-melodic-arch")
-            repos = o.get_repos(type="all", sort="full_name", direction="desc")
+            repos = self.gh_organization.get_repos(type="all", sort="full_name", direction="desc")
             for repo in repos:
                 Clone(repo.name, self.verbosity, self.output).cloning()
         else:
             self.cloning()
 
 
-class Pull:
-    def __init__(self, package, verbosity, output):
-        self.package = package
-        self.path = "./packages/{0}/".format(package)
-        self.verbosity = verbosity
-        self.output = output
+class Pull(Routines):
 
     def pull(self):
         if self.package=="all":
@@ -45,7 +34,9 @@ class Pull:
             try:
                 repo.remote("origin").pull()
                 if head_before != repo.head.object.hexsha:
-                    sed.rmlinematch(self.package, "success.txt", dryrun=False)
-            except:
+                    self.delete_package_line("success.txt")
+            except BaseException as e:
                 if self.output:
                     print("Pulling of {0} failed".format(self.package))
+                    if self.verbosity:
+                        print(e)

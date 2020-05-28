@@ -1,58 +1,22 @@
+from aurci.general import Routines
 import os
 import sys
 import re
-import requests
 import subprocess
 import urllib
-import yaml
 
 
-class Update:
+class Update(Routines):
 
-    rosdistro_url = \
-        'https://raw.githubusercontent.com/ros/rosdistro/master/melodic/distribution.yaml'
     # packages that are missing information or are special cases
     skip = ['fcl', 'libviso2', 'viso2_ros', 'opencv3', 'roscpp_git', 'message_filters_git',
         'ivcon', 'stage', 'nodelet_tutorial_math', 'common_tutorials',
         'turtle_actionlib', 'pluginlib_tutorials', 'rosbag_migration_rule',
         'actionlib_tutorials', 'ompl', 'bfl', 'convex_decomposition', 'mavlink']
 
-    def __init__(self, package, verbosity, output):
-        self.package = package
-        self.verbosity = verbosity
-        self.output = output
+    def __init__(self, package, verbosity, ouput):
+        Routines.__init__(self, package, verbosity, ouput)
         self.metainfo_dict = self.build_metainfo_dict()
-
-
-    def build_metainfo_dict(self):
-        rosdistro = yaml.load(requests.get(self.rosdistro_url, allow_redirects=True).content,
-                              Loader=yaml.BaseLoader)['repositories']
-        ros_dict = {}
-        for repo in rosdistro:
-        #Go through distro, and make entry for each package in a repository
-            d = rosdistro[repo]
-            if 'source' in d:
-                src = d['source']['url']
-            elif 'release' in d:
-                src = d['release']['url']
-            target = re.sub(r'\.git', '', src.split('/')[3] + '/' + src.split('/')[4])
-            pkgver = d.get('release', {'version': None}).get('version', None)
-            if pkgver:
-                pkgver = pkgver.split('-')[0]
-            if 'github' in src:
-                dl = 'https://github.com/' + target + '/archive/' + pkgver +'.tar.gz' \
-                    if pkgver else None
-                url = 'https://github.com/' + target + '/archive/${pkgver}.tar.gz'
-            else:
-                dl = None
-            pkg_list = d.get('release', {'packages': [repo]}).get('packages', [repo])
-            for pkg in pkg_list:
-                siblings = len(pkg_list)-1
-                pkgname = 'ros-melodic-{}'.format(re.sub('_', '-', pkg))
-                ros_dict[pkgname] = {'repo': repo, 'siblings': siblings, 'orig_name': pkg,
-                                     'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl, 'url': url}
-        return ros_dict
-
 
     def update_pkgbuild(self):
         os.chdir(os.path.join("./packages", self.package))

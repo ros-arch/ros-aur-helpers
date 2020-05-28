@@ -1,0 +1,6 @@
+PyGithub
+GitPython
+ConfigParser
+yaml
+requests
+argparse
