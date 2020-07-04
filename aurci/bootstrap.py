@@ -6,7 +6,7 @@ import os
 class Clone(Routines):
     def __init__(self, package, verbosity, output):
         Routines.__init__(self, package, verbosity, output)
-        self.url = "git@github.com:ros-melodic-arch/{0}.git".format(self.package)
+        self.url = "git@github.com:{0}/{1}.git".format(self.gh_organization_name, self.package)
 
     def cloning(self):
         Repo.clone_from(self.url, self.path)

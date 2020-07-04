@@ -16,7 +16,8 @@ class Routines:
         config = configparser.ConfigParser()
         config.read('config.ini')
         g = Github(config['CI']['GH_OAUTH_TOKEN'])
-        self.gh_organization = g.get_organization(config['CI']['GH_ORGANIZATION'])
+        self.gh_organization_name = config['CI']['GH_ORGANIZATION']
+        self.gh_organization = g.get_organization(self.gh_organization_name)
 
     def delete_package_line(self, file):
         sed = Sed()
