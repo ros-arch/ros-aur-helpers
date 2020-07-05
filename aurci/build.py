@@ -11,7 +11,7 @@ class Packages(Routines):
     SUCCESS_FILE = "success.txt"
 
     def dmakepkg(self):
-        if os.path.isfile(self.path + "PKGBUILD"):
+        if os.path.isfile(os.path.join(self.path, "PKGBUILD")):
             try:
                 subprocess.run(["dmakepkg", "-xy"], stdout=( None if self.verbosity else subprocess.DEVNULL), \
                      stderr=subprocess.STDOUT, cwd=self.path, check=True)
@@ -20,7 +20,6 @@ class Packages(Routines):
                 if self.output:
                     print("Building of {0} finished".format(self.package))
                 self.delete_package_line(self.FAILED_FILE)
-
             except subprocess.CalledProcessError:
                 with open("failed.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
