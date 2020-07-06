@@ -41,7 +41,8 @@ class Update(Routines):
                                 Maybe diffrent quotes than needed for regex?")
 
         new_pkgver = "pkgver='{}'".format(package_info['pkgver'])
-        new_dir = '_dir="{}-${{pkgver}}{}"'.format(package_info['repo'],
+        #TODO: Find a better solution than globbing
+        new_dir = '_dir="{}-${{pkgver}}/**{}"'.format(package_info['repo'],
                     '/{}'.format(package_info['orig_name']) if package_info['siblings'] else '')
         new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(package_info['url'])
 
