@@ -3,6 +3,7 @@ import argparse
 from aurci.bootstrap import Clone, Pull
 from aurci.build import Packages
 from aurci.update import Update
+from aurci.general import Routines
 
 
 def commands(option, package, verbosity, output):
@@ -27,7 +28,15 @@ def main(argv):
     exclu_group.add_argument('-q', '--quiet', help='Suppress output', action="store_false")
 
     args = parser.parse_args(argv)
-    commands(args.command, args.package, args.verbose, args.quiet)
+
+    #TODO:Remove all code duplication
+    if args.package == 'all':
+        commands(args.command, 'all', args.verbose, args.quiet)
+    elif not Routines.get_ros_distro() in args.package:
+        commands(args.command, f"{Routines.get_ros_distro()}{args.package}",
+         args.verbose, args.quiet)
+    else:
+        commands(args.command, args.package, args.verbose, args.quiet)
 
 
 if __name__=='__main__':
