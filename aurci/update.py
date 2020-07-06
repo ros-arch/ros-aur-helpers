@@ -80,6 +80,7 @@ class Update(Routines):
         if self.query_yes_no("Commit and push changes") == 'yes':
             subprocess.call(['git', 'add', 'PKGBUILD', '.SRCINFO'])
             subprocess.call(['git', 'commit', '-m', '"Update package"'])
+            subprocess.call(['git', 'push', 'origin', 'master'])
 
 
     def print_metainfo_dict(self):
