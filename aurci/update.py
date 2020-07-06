@@ -76,6 +76,11 @@ class Update(Routines):
         with open('.SRCINFO', "w") as outfile:
             subprocess.call(['makepkg', '--printsrcinfo'], stdout=outfile)
 
+        subprocess.call(['git', 'diff', 'PKGBUILD'])
+        if self.query_yes_no("Commit and push changes") == 'yes':
+            subprocess.call(['git', 'add', 'PKGBUILD', '.SRCINFO'])
+            subprocess.call(['git', 'commit', '-m', '"Update package"'])
+
 
     def print_metainfo_dict(self):
         #rosdistro = yaml.load(requests.get(self.rosdistro_url, allow_redirects=True).content,
