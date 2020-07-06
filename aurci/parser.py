@@ -33,7 +33,7 @@ def main(argv):
     if args.package == 'all':
         commands(args.command, 'all', args.verbose, args.quiet)
     elif not Routines.get_ros_distro() in args.package:
-        commands(args.command, f"{Routines.get_ros_distro()}{args.package}",
+        commands(args.command, "{0}{1}".format(Routines.get_ros_distro(), args.package),
          args.verbose, args.quiet)
     else:
         commands(args.command, args.package, args.verbose, args.quiet)
