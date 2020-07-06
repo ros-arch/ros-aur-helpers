@@ -61,3 +61,8 @@ class Routines:
                                      'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl, 'url': url}
         return ros_dict
 
+    @staticmethod
+    def get_ros_distro():
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        return config['CI']['GH_ORGANIZATION'].rstrip("arch")
