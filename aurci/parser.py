@@ -29,14 +29,11 @@ def main(argv):
 
     args = parser.parse_args(argv)
 
-    #TODO:Remove all code duplication
-    if args.package == 'all':
-        commands(args.command, 'all', args.verbose, args.quiet)
-    elif not Routines.get_ros_distro() in args.package:
-        commands(args.command, "{0}{1}".format(Routines.get_ros_distro(), args.package),
-         args.verbose, args.quiet)
-    else:
+    try:
         commands(args.command, args.package, args.verbose, args.quiet)
+    except BaseException as e:
+        commands(args.command, "{0}{1}".format(Routines.get_ros_distro(), args.package),
+            args.verbose, args.quiet)
 
 
 if __name__=='__main__':

@@ -25,7 +25,7 @@ class Packages(Routines):
                     fobj.write(self.package + "\n")
                 raise RuntimeWarning("Building of {0} failed".format(self.package))
         else:
-            raise BaseException("No PKBUILD existing: ", self.path)
+            raise FileNotFoundError("No PKBUILD existing: ", self.path)
 
     def build(self):
         if self.package=="all":
