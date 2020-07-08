@@ -27,12 +27,14 @@ class Update(Routines):
             return (self.package, 'no_tag')
 
         old_pkgver = re.findall(r"^pkgver=.*", open('PKGBUILD').read(), re.MULTILINE)
+        old_pkgrel = re.findall(r"^pkgrel=\d", open('PKGBUILD').read(), re.MULTILINE)
         old_dir = re.findall(r"^_dir=.*", open('PKGBUILD').read(), re.MULTILINE)
         old_src = re.findall(r"^source=\(.*\"", open('PKGBUILD').read(), re.MULTILINE)
         old_sha = re.findall(r"^sha256sums=\(.*\'", open('PKGBUILD').read(), re.MULTILINE)
 
-        if all((old_dir, old_src, old_sha, old_pkgver)):
+        if all((old_dir, old_src, old_sha, old_pkgver, old_pkgrel)):
             old_pkgver = old_pkgver[0]
+            old_pkgrel = old_pkgrel[0]
             old_dir = old_dir[0]
             old_src = old_src[0]
             old_sha = old_sha[0]
@@ -68,6 +70,7 @@ class Update(Routines):
         with open('PKGBUILD', 'w') as f:
             for line in lines:
                 line = re.sub(re.escape(old_pkgver), new_pkgver, line)
+                line = re.sub(re.escape(old_pkgrel), 'pkgrel=1', line)
                 line = re.sub(re.escape(old_src), new_src, line)
                 line = re.sub(re.escape(old_dir), new_dir, line)
                 line = re.sub(re.escape(old_sha), new_sha, line)
