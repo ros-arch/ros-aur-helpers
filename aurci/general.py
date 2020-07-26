@@ -15,9 +15,9 @@ class Routines:
         self.path = os.path.join("./packages/{0}".format(self.package))
         config = configparser.ConfigParser()
         config.read('config.ini')
-        g = Github(config['CI']['GH_OAUTH_TOKEN'])
+        self.gh = Github(config['CI']['GH_OAUTH_TOKEN'])
         self.gh_organization_name = config['CI']['GH_ORGANIZATION']
-        self.gh_organization = g.get_organization(self.gh_organization_name)
+        self.gh_organization = self.gh.get_organization(self.gh_organization_name)
 
     def delete_package_line(self, file):
         sed = Sed()

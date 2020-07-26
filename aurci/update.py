@@ -17,12 +17,12 @@ class Update(Routines):
     def __init__(self, package, verbosity, ouput):
         Routines.__init__(self, package, verbosity, ouput)
         self.metainfo_dict = self.build_metainfo_dict()
+        if not package == None:
+            self.package_info = self.metainfo_dict[self.package]
 
     def update_pkgbuild(self):
         os.chdir(os.path.join("./packages", self.package))
-        #Handling of missin vars
-        package_info = self.metainfo_dict[self.package]
-        if not package_info.get('pkgver', None):
+        if not self.package_info.get('pkgver', None):
             print('pkgver not in dict: {}'.format(self.package))
             return (self.package, 'no_tag')
 
@@ -42,21 +42,20 @@ class Update(Routines):
             raise RuntimeError('getting PKGBUILD lines failed: {}'.format(self.package) + "\n \
                                 Maybe diffrent quotes than needed for regex?")
 
-        new_pkgver = "pkgver='{}'".format(package_info['pkgver'])
-        #TODO: Find a better solution than globbing
-        new_dir = '_dir="{}-${{pkgver}}/**{}"'.format(package_info['repo'],
-                    '/{}'.format(package_info['orig_name']) if package_info['siblings'] else '')
-        new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(package_info['url'])
+        new_pkgver = "pkgver='{}'".format(self.package_info['pkgver'])
+        new_dir = '_dir="{}-${{pkgver}}/{}"'.format(self.package_info['repo'],
+                    '{}'.format(self.get_nested_package_path()) if self.package_info['siblings'] else '/')
+        new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(self.package_info['url'])
 
         if old_pkgver == new_pkgver and old_dir == new_dir and old_src == new_src:
             print('already matches: {}'.format(self.package))
             sys.exit(0)
 
         print('starting: {}'.format(self.package))
-        fname = '{}-{}.tar.gz'.format(self.package, package_info['pkgver'])
+        fname = '{}-{}.tar.gz'.format(self.package, self.package_info['pkgver'])
         #Trying to download tar archive to generate checksum
         try:
-            urllib.request.urlretrieve(package_info['dl'], fname)
+            urllib.request.urlretrieve(self.package_info['dl'], fname)
         except urllib.error.HTTPError:
             raise RuntimeError('download failed: {}'.format(self.package))
 
@@ -95,6 +94,17 @@ class Update(Routines):
             print("\n" + pkg + ":\n")
             print(self.metainfo_dict[pkg], end="\n")
 
+    def get_nested_package_path(self):
+        """Give back the first path containing the package name."""
+        repo_name = self.package_info['src'].lstrip('https://github.com/')[:-4]
+        repo = self.gh.get_repo(repo_name)
+        contents = repo.get_contents(".")
+        for content in contents:
+            if self.package_info['orig_name'] in content.path and content.type == 'dir':
+                return content.path
+            if content.type == 'dir':
+                contents.extend(repo.get_contents(content.path))
+        raise RuntimeError("Can't find nested path: " + self.package)
 
 
 def main():
