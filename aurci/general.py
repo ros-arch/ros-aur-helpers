@@ -1,4 +1,4 @@
-from PythonSed import Sed, SedException
+from aurci import sed
 from github import Github
 import os
 import requests
@@ -20,14 +20,7 @@ class Routines:
         self.gh_organization = self.gh.get_organization(self.gh_organization_name)
 
     def delete_package_line(self, file):
-        sed = Sed()
-        try:
-            sed.no_autoprint = True
-            sed.regexp_extended = False
-            sed.load_string("/{0}/d".format(self.package))
-            sed.apply(file, "test.txt")
-        except SedException as e:
-            print(e.message)
+        sed.rmlinematch(self.package, file)
 
     @staticmethod
     def build_metainfo_dict():
