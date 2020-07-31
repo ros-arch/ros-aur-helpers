@@ -44,7 +44,7 @@ class Update(Routines):
 
         new_pkgver = "pkgver='{}'".format(self.package_info['pkgver'])
         new_dir = '_dir="{}-${{pkgver}}/{}"'.format(self.package_info['repo'],
-                    '{}'.format(self.get_nested_package_path()) if self.package_info['siblings'] else '/')
+                    '{}'.format(self.get_nested_package_path()) if self.package_info['siblings'] else '')
         new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(self.package_info['url'])
 
         if old_pkgver == new_pkgver and old_dir == new_dir and old_src == new_src:
