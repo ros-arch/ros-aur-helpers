@@ -32,10 +32,10 @@ class Routines:
         for repo in rosdistro:
         #Go through distro, and make entry for each package in a repository
             d = rosdistro[repo]
-            if 'source' in d:
-                src = d['source']['url']
-            elif 'release' in d:
+            if 'release' in d:
                 src = d['release']['url']
+            elif 'source' in d:
+                src = d['source']['url']
             target = re.sub(r'\.git', '', src.split('/')[3] + '/' + src.split('/')[4])
             pkgver = d.get('release', {'version': None}).get('version', None)
             if pkgver:
@@ -49,9 +49,19 @@ class Routines:
             pkg_list = d.get('release', {'packages': [repo]}).get('packages', [repo])
             for pkg in pkg_list:
                 siblings = len(pkg_list)-1
+                # TODO: Replace hard-coded melodic
                 pkgname = 'ros-melodic-{}'.format(re.sub('_', '-', pkg))
+                pkg_url = '/'.join([re.sub(r'\.git', '', src),
+                                    'archive/release/melodic',
+                                    pkg,
+                                    '${pkgver}.tar.gz'])
+                pkg_dl = '/'.join([re.sub(r'\.git', '', src),
+                                    'archive/release/melodic',
+                                    pkg,
+                                    str(pkgver)]) + '.tar.gz'
                 ros_dict[pkgname] = {'repo': repo, 'siblings': siblings, 'orig_name': pkg,
-                                     'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl, 'url': url}
+                                     'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': pkg_dl,
+                                     'url': pkg_url}
         return ros_dict
 
     @staticmethod

@@ -3,6 +3,7 @@ import os
 import sys
 import re
 import subprocess
+import tarfile
 import urllib
 
 
@@ -43,8 +44,6 @@ class Update(Routines):
                                 Maybe diffrent quotes than needed for regex?")
 
         new_pkgver = "pkgver='{}'".format(self.package_info['pkgver'])
-        new_dir = '_dir="{}-${{pkgver}}/{}"'.format(self.package_info['repo'],
-                    '{}'.format(self.get_nested_package_path()) if self.package_info['siblings'] else '')
         new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(self.package_info['url'])
 
         if old_pkgver == new_pkgver and old_dir == new_dir and old_src == new_src:
@@ -61,6 +60,16 @@ class Update(Routines):
 
         sha256 = subprocess.run(['sha256sum', fname], check=True, capture_output=True)
         new_sha = "sha256sums=('{}'".format(sha256.stdout.decode('utf-8').split(' ')[0])
+
+        # TODO:
+        #   - Error checking
+        #   - Probably use with ...: notation
+        #   - Check, whether main_dir is only one string (should be)
+        archive = tarfile.open(fname, "r:gz")
+        main_dir = os.path.commonprefix(archive.getnames())
+        new_dir = '_dir="{}"'.format(main_dir)
+        archive.close()
+
         os.remove(fname)
 
         with open('PKGBUILD', 'r') as f:
