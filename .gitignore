@@ -5,3 +5,4 @@ packages
 repository/
 failed.txt
 success.txt
+config.ini
