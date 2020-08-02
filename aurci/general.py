@@ -23,7 +23,7 @@ class Routines:
     def get_config():
         config = configparser.ConfigParser()
         if not os.path.exists('config.ini'):
-            shutil.copy('config_distribute.ini', 'config.ini')
+            shutil.copy('config_example.ini', 'config.ini')
         config.read('config.ini')
         return config
 
