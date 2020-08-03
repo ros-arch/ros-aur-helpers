@@ -2,6 +2,7 @@ from aurci import sed
 from github import Github
 import os
 import requests
+import shutil
 import yaml
 import re
 import configparser
@@ -13,11 +14,18 @@ class Routines:
         self.verbosity = verbosity
         self.output = output
         self.path = os.path.join("./packages/{0}".format(self.package))
-        config = configparser.ConfigParser()
-        config.read('config.ini')
+        config = self.get_config()
         self.gh = Github(config['CI']['GH_OAUTH_TOKEN'])
         self.gh_organization_name = config['CI']['GH_ORGANIZATION']
         self.gh_organization = self.gh.get_organization(self.gh_organization_name)
+
+    @staticmethod
+    def get_config():
+        config = configparser.ConfigParser()
+        if not os.path.exists('config.ini'):
+            shutil.copy('config_example.ini', 'config.ini')
+        config.read('config.ini')
+        return config
 
     def delete_package_line(self, file):
         sed.rmlinematch(self.package, file)
@@ -56,8 +64,7 @@ class Routines:
 
     @staticmethod
     def get_ros_distro():
-        config = configparser.ConfigParser()
-        config.read('config.ini')
+        config = Routines.get_config()
         return config['CI']['GH_ORGANIZATION'].rstrip("arch")
 
     @staticmethod
