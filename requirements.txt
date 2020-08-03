@@ -3,5 +3,4 @@ GitPython
 ConfigParser
 yaml
 requests
-shutil
 argparse
