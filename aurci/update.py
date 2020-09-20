@@ -4,7 +4,7 @@ import sys
 import re
 import subprocess
 import urllib
-
+import xml.etree.ElementTree as ET
 
 class Update(Routines):
 
@@ -100,8 +100,11 @@ class Update(Routines):
         repo = self.gh.get_repo(repo_name)
         contents = repo.get_contents(".")
         for content in contents:
-            if self.package_info['orig_name'] in content.path and content.type == 'dir':
-                return content.path
+            if content.name == 'package.xml':
+                root = ET.fromstring(content.decoded_content)
+                name = root.find('name')
+                if name.text == self.package_info['orig_name']:
+                    return os.path.dirname(content.path)
             if content.type == 'dir':
                 contents.extend(repo.get_contents(content.path))
         raise RuntimeError("Can't find nested path: " + self.package)
