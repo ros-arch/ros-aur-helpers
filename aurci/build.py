@@ -9,11 +9,12 @@ class Packages(Routines):
 
     FAILED_FILE = "failed.txt"
     SUCCESS_FILE = "success.txt"
+    CHROOT = os.environ.get('CHROOT')
 
-    def dmakepkg(self):
+    def makepkg(self):
         if os.path.isfile(os.path.join(self.path, "PKGBUILD")):
             try:
-                subprocess.run(["dmakepkg", "-xy"], stdout=( None if self.verbosity else subprocess.DEVNULL), \
+                subprocess.run(['makechrootpkg', '-c', '-r', self.CHROOT], stdout=( None if self.verbosity else subprocess.DEVNULL), \
                      stderr=subprocess.STDOUT, cwd=self.path, check=True)
                 with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
@@ -30,9 +31,9 @@ class Packages(Routines):
     def build(self):
         if self.package=="all":
             for folder in os.listdir("./packages"):
-                Packages(folder, self.verbosity, self.output).dmakepkg()
+                Packages(folder, self.verbosity, self.output).makepkg()
         else:
-            self.dmakepkg()
+            self.makepkg()
 
     def del_old_pkg(self):
         for pkg in glob.iglob("./repository/*{0}-?.*-?-*.pkg.tar.*".format(self.package)):
@@ -72,7 +73,7 @@ class Packages(Routines):
                             print("Building of {0} failed".format(self.package))
         else:
             try:
-                self.dmakepkg()
+                self.makepkg()
                 self.del_old_pkg()
                 self.mvpkg()
                 self.aur_push()
