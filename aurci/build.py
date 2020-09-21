@@ -57,6 +57,7 @@ class Packages(Routines):
                     print(e)
 
     def deploy(self):
+        DeprecationWarning("deploy command replaced by https://github.com/bionade24/abs-cd")
         if self.package=="all":
             os.remove(self.FAILED_FILE)
             os.mknod(self.FAILED_FILE)
