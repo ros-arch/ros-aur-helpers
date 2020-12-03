@@ -28,7 +28,8 @@ class Routines:
         return config
 
     def delete_package_line(self, file):
-        sed.rmlinematch(self.package, file)
+        if os.path.isfile(file):
+            sed.rmlinematch(self.package, file)
 
     @staticmethod
     def build_metainfo_dict():
