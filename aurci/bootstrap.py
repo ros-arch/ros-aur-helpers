@@ -1,6 +1,7 @@
 from git import Repo
 from aurci.general import Routines
 import os
+from concurrent.futures import ThreadPoolExecutor
 
 
 class Clone(Routines):
@@ -13,9 +14,10 @@ class Clone(Routines):
 
     def clone(self):
         if self.package=="all":
+            t = ThreadPoolExecutor(max_workers=(os.cpu_count()))
             repos = self.gh_organization.get_repos(type="all", sort="full_name", direction="desc")
             for repo in repos:
-                Clone(repo.name, self.verbosity, self.output).cloning()
+                t.submit(Clone(repo.name, self.verbosity, self.output).cloning)
         else:
             self.cloning()
 
@@ -24,8 +26,9 @@ class Pull(Routines):
 
     def pull(self):
         if self.package=="all":
+            t = ThreadPoolExecutor(max_workers=(os.cpu_count()))
             for folder in os.listdir("./packages"):
-                Pull(folder, self.verbosity, self.output).pull()
+                t.submit(Pull(folder, self.verbosity, self.output).pull)
         else:
             repo = Repo(path=self.path)
             repo.git.stash()
