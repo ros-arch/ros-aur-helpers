@@ -17,7 +17,7 @@ class Update(Routines):
     def __init__(self, package, verbosity, ouput):
         Routines.__init__(self, package, verbosity, ouput)
         self.metainfo_dict = self.build_metainfo_dict()
-        if not package == None:
+        if not package is None:
             self.package_info = self.metainfo_dict[self.package]
 
     def update_pkgbuild(self):
