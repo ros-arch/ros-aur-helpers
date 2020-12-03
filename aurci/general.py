@@ -14,7 +14,7 @@ class Routines:
         self.verbosity = verbosity
         self.output = output
         self.path = os.path.join("./packages/{0}".format(self.package))
-        config = self.get_config()
+        config = Routines.get_config()
         self.gh = Github(config['CI']['GH_OAUTH_TOKEN'])
         self.gh_organization_name = config['CI']['GH_ORGANIZATION']
         self.gh_organization = self.gh.get_organization(self.gh_organization_name)

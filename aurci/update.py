@@ -49,7 +49,7 @@ class Update(Routines):
 
         if old_pkgver == new_pkgver and old_dir == new_dir and old_src == new_src:
             print('already matches: {}'.format(self.package))
-            sys.exit(0)
+            return
 
         print('starting: {}'.format(self.package))
         fname = '{}-{}.tar.gz'.format(self.package, self.package_info['pkgver'])
