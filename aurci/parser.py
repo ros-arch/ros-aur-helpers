@@ -1,5 +1,6 @@
 import sys
 import argparse
+import os
 from aurci.bootstrap import Clone, Pull
 from aurci.build import Packages
 from aurci.update import Update
@@ -32,8 +33,12 @@ def main(argv):
     try:
         commands(args.command, args.package, args.verbose, args.quiet)
     except BaseException as e:
-        commands(args.command, "{0}{1}".format(Routines.get_ros_distro(), args.package),
-            args.verbose, args.quiet)
+        name = "{0}{1}".format(Routines.get_ros_distro(), args.package)
+        if os.path.exists(os.path.join("packages/", name)):
+            try:
+                commands(args.command, name, args.verbose, args.quiet)
+            except BaseException as e:
+                print(f"Error: {args.package} could not be found while running {args.command}")
 
 
 if __name__=='__main__':
