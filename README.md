@@ -7,9 +7,8 @@ Installation
 =
 Prequisites: Python>=3.8, git, devtools  
 [Set up ABS build chroot](https://wiki.archlinux.org/index.php/DeveloperWiki:Building_in_a_clean_chroot#Handling_major_rebuilds)  
-Set a folder where the built packages should get into.  
-Add this folder as repo.  
-Use repo-add manually for now.  
+Set a folder where the built packages should get into.(Config in /etc/makepkg.conf)  
+Add this folder as repo. (Config in $CHROOT/root/etc/pacman.conf)  
 
 Usage
 =
