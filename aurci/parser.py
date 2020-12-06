@@ -30,16 +30,22 @@ def main(argv):
 
     args = parser.parse_args(argv)
 
-    try:
-        commands(args.command, args.package, args.verbose, args.quiet)
-    except BaseException as e:
-        name = "{0}{1}".format(Routines.get_ros_distro(), args.package)
-        if os.path.exists(os.path.join("packages/", name)):
+    def retry_with_rosdistro_name():
+        name = "{0}{1}".format(Routines().get_ros_distro(), args.package)
+        if os.path.exists(os.path.join(Routines.CACHE_ROOT, "packages/", name)):
             try:
                 commands(args.command, name, args.verbose, args.quiet)
-            except BaseException as e:
-                print(f"Error: {args.package} could not be found while running {args.command}")
+            except KeyError:
+                print(f"Error: {args.package} could not be found in ROS Metainfo dict while running {args.command}")
+            except FileNotFoundError:
+                print(f"Error: {args.package} folder could not be found while running {args.command}")
 
+    try:
+        commands(args.command, args.package, args.verbose, args.quiet)
+    except KeyError:
+        retry_with_rosdistro_name()
+    except FileNotFoundError:
+        retry_with_rosdistro_name()
 
 if __name__=='__main__':
     main(sys.argv)

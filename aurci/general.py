@@ -13,14 +13,15 @@ class Routines:
     CACHE_ROOT = os.environ.get("XDG_CACHE_HOME", os.path.join(Path.home(), ".cache/"))
 
     def __init__(self, package=None, verbosity=False, output=True):
-        self.package = package
         self.verbosity = verbosity
         self.output = output
         self.config_path = os.path.join(Routines.CONFIG_ROOT, 'ros-aur-helper')
         self.cache_path = os.path.join(Routines.CACHE_ROOT, 'ros-aur-helper')
         self.check_and_create_path(self.config_path)
         self.check_and_create_path(self.cache_path)
-        self.repos_path = os.path.join(self.cache_path, "packages", self.package)
+        if package:
+            self.package = package
+            self.repos_path = os.path.join(self.cache_path, "packages", self.package)
         config = self.get_config()
         self.gh = Github(config['CI']['GH_OAUTH_TOKEN'])
         self.gh_organization_name = config['CI']['GH_ORGANIZATION']
