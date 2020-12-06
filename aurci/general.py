@@ -9,6 +9,8 @@ import re
 import configparser
 
 class Routines:
+    CONFIG_ROOT = os.environ.get("XDG_CONFIG_HOME", os.path.join(Path.home(), ".config/"))
+    CACHE_ROOT = os.environ.get("XDG_CACHE_HOME", os.path.join(Path.home(), ".cache/"))
 
     def __init__(self, package=None, verbosity=False, output=True):
         self.package = package
@@ -22,8 +24,7 @@ class Routines:
 
     @staticmethod
     def get_config():
-        CONFIG_ROOT = os.environ.get("XDG_CONFIG_HOME", os.path.join(Path.home(), ".config/"))
-        config_path = os.path.join(CONFIG_ROOT, 'ros-aur-helper', 'config.ini')
+        config_path = os.path.join(Routines.CONFIG_ROOT, 'ros-aur-helper', 'config.ini')
         if not os.path.exists(config_path):
             shutil.copy('config_example.ini', config_path)
         config = configparser.ConfigParser()
