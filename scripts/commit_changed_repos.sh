@@ -1,8 +1,11 @@
 #!/bin/bash
 
-for dir in $(ls packages);
+CACHE_PATH=${XDG_CACHE_HOME+"~/.cache"}
+PACKAGES_PATH=$CACHE_PATH/ros-aur-helper/packages
+
+for dir in $(ls $PACKAGES_PATH);
 do
-    cd packages/$dir
+    cd $PACKAGES_PATH/$dir
     if git status | grep -q '.SRCINFO'; then
         git add .SRCINFO PKGBUILD
         git commit -m "Updated package"

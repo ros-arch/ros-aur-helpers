@@ -1,10 +1,13 @@
 #!/bin/zsh
 
-for i in `ls packages`;
+CACHE_PATH=${XDG_CACHE_HOME+"~/.cache"}
+PACKAGES_PATH=$CACHE_PATH/ros-aur-helper/packages
+
+for i in $(ls $PACKAGES_PATH);
 do
-	if grep 'intel-tbb' packages/$i/PKGBUILD; then
+	if grep 'intel-tbb' $PACKAGES_PATH/$i/PKGBUILD; then
 		echo "$i depends on intel-tbb"
-		cd packages/$i
+		cd $PACKAGES_PATH/$i
 		sed -i "s/intel-tbb/tbb/g" PKGBUILD
 		grep "pkgrel" PKGBUILD | IFS="=" read -r name value
 		(( pkgrel = $value + 1 ))

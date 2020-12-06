@@ -1,10 +1,13 @@
 #!/bin/zsh
 
-for i in `ls packages`;
+CACHE_PATH=${XDG_CACHE_HOME+"~/.cache"}
+PACKAGES_PATH=$CACHE_PATH/ros-aur-helper/\$PACKAGES_PATH
+
+for i in $(ls $PACKAGES_PATH);
 do
-	if grep '/bin/python2' packages/$i/PKGBUILD; then
+	if grep '/bin/python2' $PACKAGES_PATH/$i/PKGBUILD; then
 		echo "$i links against python2"
-		cd packages/$i
+		cd $PACKAGES_PATH/$i
 		sed -i "s!/bin/python2!/bin/python3!g" PKGBUILD
 		sed -i "s/-v 2/-v 3/g" PKGBUILD
 		grep "pkgrel" PKGBUILD | IFS="=" read -r name value

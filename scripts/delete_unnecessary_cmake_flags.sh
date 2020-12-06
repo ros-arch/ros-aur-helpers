@@ -1,10 +1,13 @@
 #!/bin/zsh
 
-for i in `ls packages`;
+CACHE_PATH=${XDG_CACHE_HOME+"~/.cache"}
+PACKAGES_PATH=$CACHE_PATH/ros-aur-helper/packages
+
+for i in $(ls $PACKAGES_PATH);
 do
-    if grep 'DPYTHON_LIBRARY' packages/$i/PKGBUILD; then
+    if grep 'DPYTHON_LIBRARY' $PACKAGES_PATH/$i/PKGBUILD; then
         echo "$i has unnecessary cmake args"
-        cd packages/$i
+        cd $PACKAGES_PATH/$i
         sed -i '/-DPYTHON_BASENAME/d' PKGBUILD
         sed -i '/-DPYTHON_LIBRARY/d' PKGBUILD
         sed -i '/-DPYTHON_INCLUDE_DIR/d' PKGBUILD
