@@ -31,14 +31,18 @@ def main(argv):
     args = parser.parse_args(argv)
 
     def retry_with_rosdistro_name():
-        name = "ros-{0}-{1}".format(Routines().get_ros_distro(), args.package)
-        if os.path.exists(os.path.join(Routines.CACHE_ROOT, "packages/", name)):
+        routines = Routines()
+        name = "ros-{0}-{1}".format(routines.get_ros_distro(), args.package)
+        if os.path.exists(os.path.join(routines.cache_path, 'packages', name)):
             try:
                 commands(args.command, name, args.verbose, args.quiet)
             except KeyError:
-                print(f"Error: {args.package} could not be found in ROS Metainfo dict while running {args.command}")
+                print(f"Error: {args.package} could not be found in ROS Metainfo dict while running {args.command}",
+                 file=sys.stderr)
             except FileNotFoundError:
-                print(f"Error: {args.package} folder could not be found while running {args.command}")
+                print(f"Error: {args.package} folder could not be found while running {args.command}", file=sys.stderr)
+        else:
+            print(f"Error: {args.package} is not on disk. Try to clone it.", file=sys.stderr)
 
     try:
         commands(args.command, args.package, args.verbose, args.quiet)

@@ -45,10 +45,9 @@ class Routines:
         if os.path.isfile(file):
             sed.rmlinematch(self.package, file)
 
-    @staticmethod
-    def build_metainfo_dict():
+    def build_metainfo_dict(self):
         rosdistro_url = \
-        f'https://raw.githubusercontent.com/ros/rosdistro/master/{get_ros_distro}/distribution.yaml'
+        f'https://raw.githubusercontent.com/ros/rosdistro/master/{self.get_ros_distro()}/distribution.yaml'
         rosdistro = yaml.load(requests.get(rosdistro_url, allow_redirects=True).content,
                               Loader=yaml.BaseLoader)['repositories']
         ros_dict = {}

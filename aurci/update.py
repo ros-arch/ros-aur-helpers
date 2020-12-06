@@ -8,6 +8,9 @@ import xml.etree.ElementTree as ET
 
 class Update(Routines):
 
+    #Singleton to not reload for every package
+    #metainfo_dict = None
+
     # packages that are missing information or are special cases
     skip = ['fcl', 'libviso2', 'viso2_ros', 'opencv3', 'roscpp_git', 'message_filters_git',
         'ivcon', 'stage', 'nodelet_tutorial_math', 'common_tutorials',
