@@ -30,10 +30,10 @@ def main(argv):
 
     args = parser.parse_args(argv)
 
-    def retry_with_rosdistro_name():
+    def retry_with_rosdistro_name(check_path=False):
         routines = Routines()
         name = "ros-{0}-{1}".format(routines.get_ros_distro(), args.package)
-        if os.path.exists(os.path.join(routines.cache_path, 'packages', name)):
+        if not check_path or os.path.exists(os.path.join(routines.cache_path, 'packages', name)):
             try:
                 commands(args.command, name, args.verbose, args.quiet)
             except KeyError:
@@ -49,7 +49,7 @@ def main(argv):
     except KeyError:
         retry_with_rosdistro_name()
     except FileNotFoundError:
-        retry_with_rosdistro_name()
+        retry_with_rosdistro_name(check_path=True)
 
 if __name__=='__main__':
     main(sys.argv)
