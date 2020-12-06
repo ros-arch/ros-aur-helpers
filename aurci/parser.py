@@ -20,7 +20,7 @@ def commands(option, package, verbosity, output):
 
 
 def main(argv):
-    parser=argparse.ArgumentParser(prog='aurci', add_help=True)
+    parser=argparse.ArgumentParser(prog='rosaur', add_help=True)
     exclu_group = parser.add_mutually_exclusive_group()
 
     parser.add_argument('command', choices=['clone', 'pull', 'build', 'deploy', 'update'])
