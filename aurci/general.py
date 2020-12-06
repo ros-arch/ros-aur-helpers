@@ -1,5 +1,6 @@
 from aurci import sed
 from github import Github
+from pathlib import Path
 import os
 import requests
 import shutil
@@ -21,10 +22,12 @@ class Routines:
 
     @staticmethod
     def get_config():
+        CONFIG_ROOT = os.environ.get("XDG_CONFIG_HOME", os.path.join(Path.home(), ".config/"))
+        config_path = os.path.join(CONFIG_ROOT, 'ros-aur-helper', 'config.ini')
+        if not os.path.exists(config_path):
+            shutil.copy('config_example.ini', config_path)
         config = configparser.ConfigParser()
-        if not os.path.exists('config.ini'):
-            shutil.copy('config_example.ini', 'config.ini')
-        config.read('config.ini')
+        config.read(config_path)
         return config
 
     def delete_package_line(self, file):
