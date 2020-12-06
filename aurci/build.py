@@ -12,10 +12,10 @@ class Packages(Routines):
     CHROOT = os.environ.get('CHROOT')
 
     def makepkg(self):
-        if os.path.isfile(os.path.join(self.path, "PKGBUILD")):
+        if os.path.isfile(os.path.join(self.repos_path, "PKGBUILD")):
             try:
                 subprocess.run(['makechrootpkg', '-c', '-r', self.CHROOT], stdout=( None if self.verbosity else subprocess.DEVNULL), \
-                     stderr=subprocess.STDOUT, cwd=self.path, check=True)
+                     stderr=subprocess.STDOUT, cwd=self.repos_path, check=True)
                 with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
                 if self.output:
@@ -26,7 +26,7 @@ class Packages(Routines):
                     fobj.write(self.package + "\n")
                 raise RuntimeWarning("Building of {0} failed".format(self.package))
         else:
-            raise FileNotFoundError("No PKBUILD existing: ", self.path)
+            raise FileNotFoundError("No PKBUILD existing: ", self.repos_path)
 
     def build(self):
         if self.package=="all":
@@ -40,14 +40,14 @@ class Packages(Routines):
             os.remove(pkg)
 
     def mvpkg(self):
-        for pkg_path in glob.iglob(self.path + "/*pkg.tar*"):
+        for pkg_path in glob.iglob(self.repos_path + "/*pkg.tar*"):
             shutil.move(pkg_path, "./repository/")
 
     def aur_push(self):
         try:
-            pkg_repo = Repo(path=self.path).remote(name='aur')
+            pkg_repo = Repo(path=self.repos_path).remote(name='aur')
         except ValueError:
-            pkg_repo = Repo(path=self.path).create_remote('aur', "aur@aur.archlinux.org:/{0}.git".format(self.package))
+            pkg_repo = Repo(path=self.repos_path).create_remote('aur', "aur@aur.archlinux.org:/{0}.git".format(self.package))
         pkg_repo.fetch()
         try:
             pkg_repo.push()

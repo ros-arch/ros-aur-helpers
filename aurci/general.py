@@ -16,19 +16,28 @@ class Routines:
         self.package = package
         self.verbosity = verbosity
         self.output = output
-        self.path = os.path.join("./packages/{0}".format(self.package))
-        config = Routines.get_config()
+        self.config_path = os.path.join(Routines.CONFIG_ROOT, 'ros-aur-helper')
+        self.cache_path = os.path.join(Routines.CACHE_ROOT, 'ros-aur-helper')
+        self.check_and_create_path(self.config_path)
+        self.check_and_create_path(self.cache_path)
+        self.repos_path = os.path.join(self.cache_path, "packages", self.package)
+        config = self.get_config()
         self.gh = Github(config['CI']['GH_OAUTH_TOKEN'])
         self.gh_organization_name = config['CI']['GH_ORGANIZATION']
         self.gh_organization = self.gh.get_organization(self.gh_organization_name)
 
+
     @staticmethod
-    def get_config():
-        config_path = os.path.join(Routines.CONFIG_ROOT, 'ros-aur-helper', 'config.ini')
-        if not os.path.exists(config_path):
-            shutil.copy('config_example.ini', config_path)
+    def check_and_create_path(path):
+        if not (os.path.exists(path)):
+            Path.mkdir(path)
+
+    def get_config(self):
+        configfile_path = os.path.join(self.config_path, 'config.ini')
+        if not os.path.exists(configfile_path):
+            shutil.copy('config_example.ini', configfile_path)
         config = configparser.ConfigParser()
-        config.read(config_path)
+        config.read(configfile_path)
         return config
 
     def delete_package_line(self, file):
@@ -67,9 +76,8 @@ class Routines:
                                      'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl, 'url': url}
         return ros_dict
 
-    @staticmethod
-    def get_ros_distro():
-        config = Routines.get_config()
+    def get_ros_distro(self):
+        config = self.get_config()
         return config['CI']['GH_ORGANIZATION'].rstrip("arch")
 
     @staticmethod
