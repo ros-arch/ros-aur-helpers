@@ -57,7 +57,7 @@ class Update(Routines):
         try:
             urllib.request.urlretrieve(self.package_info['dl'], fname)
         except urllib.error.HTTPError:
-            raise RuntimeError('download failed: {}'.format(self.package))
+            raise RuntimeError('download failed: {}, URL: {}'.format(self.package, self.package_info['dl']))
 
         sha256 = subprocess.run(['sha256sum', fname], check=True, capture_output=True)
         new_sha = "sha256sums=('{}'".format(sha256.stdout.decode('utf-8').split(' ')[0])
