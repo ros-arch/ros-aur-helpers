@@ -48,7 +48,7 @@ class Routines:
     @staticmethod
     def build_metainfo_dict():
         rosdistro_url = \
-        'https://raw.githubusercontent.com/ros/rosdistro/master/melodic/distribution.yaml'
+        f'https://raw.githubusercontent.com/ros/rosdistro/master/{get_ros_distro}/distribution.yaml'
         rosdistro = yaml.load(requests.get(rosdistro_url, allow_redirects=True).content,
                               Loader=yaml.BaseLoader)['repositories']
         ros_dict = {}
@@ -79,7 +79,7 @@ class Routines:
 
     def get_ros_distro(self):
         config = self.get_config()
-        return config['CI']['GH_ORGANIZATION'].rstrip("arch")
+        return config['CI']['GH_ORGANIZATION'].split('-')[1]
 
     @staticmethod
     def query_yes_no(question, default="yes"):

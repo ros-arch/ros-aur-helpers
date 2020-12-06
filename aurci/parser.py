@@ -31,7 +31,7 @@ def main(argv):
     args = parser.parse_args(argv)
 
     def retry_with_rosdistro_name():
-        name = "{0}{1}".format(Routines().get_ros_distro(), args.package)
+        name = "ros-{0}-{1}".format(Routines().get_ros_distro(), args.package)
         if os.path.exists(os.path.join(Routines.CACHE_ROOT, "packages/", name)):
             try:
                 commands(args.command, name, args.verbose, args.quiet)

@@ -21,7 +21,7 @@ class Update(Routines):
             self.package_info = self.metainfo_dict[self.package]
 
     def update_pkgbuild(self):
-        os.chdir(os.path.join("./packages", self.package))
+        os.chdir(self.repos_path)
         if not self.package_info.get('pkgver', None):
             print('pkgver not in dict: {}'.format(self.package))
             return (self.package, 'no_tag')
