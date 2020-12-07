@@ -9,6 +9,7 @@ from aurci.general import Routines
 REPO_ADD_BIN = '/usr/bin/repo-add'
 MAKECHROOTPKG_BIN = '/usr/bin/makechrootpkg'
 
+
 class Packages(Routines):
 
     FAILED_FILE = "failed.txt"
@@ -16,18 +17,18 @@ class Packages(Routines):
 
     def __init__(self, package, verbosity, output):
         Routines.__init__(self, package, verbosity, output)
-        self.chroot = os.environ.get('CHROOT', os.path.join(self.cache_path, "chroot"))
+        self.chroot = os.environ.get(
+            'CHROOT', os.path.join(self.cache_path, "chroot"))
         self.check_and_create_path(self.chroot)
         self.localrepo_path = os.path.join(self.cache_path, 'repo')
         self.check_and_create_path(self.localrepo_path)
-
 
     def makepkg(self):
         if os.path.isfile(os.path.join(self.repos_path, "PKGBUILD")):
             try:
                 subprocess.run([MAKECHROOTPKG_BIN, '-c', '-d', self.localrepo_path, '-r',
-                 self.chroot], stdout=( None if self.verbosity else subprocess.DEVNULL), \
-                     stderr=subprocess.STDOUT, cwd=self.repos_path, check=True)
+                                self.chroot], stdout=(None if self.verbosity else subprocess.DEVNULL),
+                               stderr=subprocess.STDOUT, cwd=self.repos_path, check=True)
                 with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
                 if self.output:
@@ -36,17 +37,18 @@ class Packages(Routines):
             except subprocess.CalledProcessError:
                 with open("failed.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
-                raise RuntimeWarning("Building of {0} failed".format(self.package))
+                raise RuntimeWarning(
+                    "Building of {0} failed".format(self.package))
         else:
             raise FileNotFoundError("No PKBUILD existing: ", self.repos_path)
         try:
             subprocess.run([REPO_ADD_BIN, 'localhost.db.tar.zst'] + glob.glob(os.path.join(self.localrepo_path, '*.pkg.tar.*')),
-                check=True, cwd=self.localrepo_path)
+                           check=True, cwd=self.localrepo_path)
         except subprocess.CalledProcessError as e:
             print(e.stdout, file=sys.stderr)
 
     def build(self):
-        if self.package=="all":
+        if self.package == "all":
             for folder in os.listdir("./packages"):
                 Packages(folder, self.verbosity, self.output).makepkg()
         else:
@@ -64,7 +66,8 @@ class Packages(Routines):
         try:
             pkg_repo = Repo(path=self.repos_path).remote(name='aur')
         except ValueError:
-            pkg_repo = Repo(path=self.repos_path).create_remote('aur', "aur@aur.archlinux.org:/{0}.git".format(self.package))
+            pkg_repo = Repo(path=self.repos_path).create_remote(
+                'aur', "aur@aur.archlinux.org:/{0}.git".format(self.package))
         pkg_repo.fetch()
         try:
             pkg_repo.push()
@@ -75,8 +78,9 @@ class Packages(Routines):
                     print(e)
 
     def deploy(self):
-        DeprecationWarning("deploy command replaced by https://github.com/bionade24/abs-cd")
-        if self.package=="all":
+        DeprecationWarning(
+            "deploy command replaced by https://github.com/bionade24/abs-cd")
+        if self.package == "all":
             os.remove(self.FAILED_FILE)
             os.mknod(self.FAILED_FILE)
             for folder in os.listdir("./packages"):
@@ -85,9 +89,11 @@ class Packages(Routines):
                         pass
                     else:
                         try:
-                            Packages(folder, self.verbosity, self.output).deploy()
+                            Packages(folder, self.verbosity,
+                                     self.output).deploy()
                         except RuntimeWarning:
-                            print("Building of {0} failed".format(self.package))
+                            print("Building of {0} failed".format(
+                                self.package))
         else:
             try:
                 self.makepkg()

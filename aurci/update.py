@@ -6,16 +6,17 @@ import subprocess
 import urllib
 import xml.etree.ElementTree as ET
 
+
 class Update(Routines):
 
-    #Singleton to not reload for every package
+    # Singleton to not reload for every package
     #metainfo_dict = None
 
     # packages that are missing information or are special cases
     skip = ['fcl', 'libviso2', 'viso2_ros', 'opencv3', 'roscpp_git', 'message_filters_git',
-        'ivcon', 'stage', 'nodelet_tutorial_math', 'common_tutorials',
-        'turtle_actionlib', 'pluginlib_tutorials', 'rosbag_migration_rule',
-        'actionlib_tutorials', 'ompl', 'bfl', 'convex_decomposition', 'mavlink']
+            'ivcon', 'stage', 'nodelet_tutorial_math', 'common_tutorials',
+            'turtle_actionlib', 'pluginlib_tutorials', 'rosbag_migration_rule',
+            'actionlib_tutorials', 'ompl', 'bfl', 'convex_decomposition', 'mavlink']
 
     def __init__(self, package, verbosity, ouput):
         Routines.__init__(self, package, verbosity, ouput)
@@ -29,11 +30,16 @@ class Update(Routines):
             print('pkgver not in dict: {}'.format(self.package))
             return (self.package, 'no_tag')
 
-        old_pkgver = re.findall(r"^pkgver=.*", open('PKGBUILD').read(), re.MULTILINE)
-        old_pkgrel = re.findall(r"^pkgrel=\d", open('PKGBUILD').read(), re.MULTILINE)
-        old_dir = re.findall(r"^_dir=.*", open('PKGBUILD').read(), re.MULTILINE)
-        old_src = re.findall(r"^source=\(.*\"", open('PKGBUILD').read(), re.MULTILINE)
-        old_sha = re.findall(r"^sha256sums=\(.*\'", open('PKGBUILD').read(), re.MULTILINE)
+        old_pkgver = re.findall(
+            r"^pkgver=.*", open('PKGBUILD').read(), re.MULTILINE)
+        old_pkgrel = re.findall(r"^pkgrel=\d", open(
+            'PKGBUILD').read(), re.MULTILINE)
+        old_dir = re.findall(
+            r"^_dir=.*", open('PKGBUILD').read(), re.MULTILINE)
+        old_src = re.findall(
+            r"^source=\(.*\"", open('PKGBUILD').read(), re.MULTILINE)
+        old_sha = re.findall(
+            r"^sha256sums=\(.*\'", open('PKGBUILD').read(), re.MULTILINE)
 
         if all((old_dir, old_src, old_sha, old_pkgver, old_pkgrel)):
             old_pkgver = old_pkgver[0]
@@ -47,23 +53,28 @@ class Update(Routines):
 
         new_pkgver = "pkgver='{}'".format(self.package_info['pkgver'])
         new_dir = '_dir="{}-${{pkgver}}/{}"'.format(self.package_info['repo'],
-                    '{}'.format(self.get_nested_package_path()) if self.package_info['siblings'] else '')
-        new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(self.package_info['url'])
+                                                    '{}'.format(self.get_nested_package_path()) if self.package_info['siblings'] else '')
+        new_src = 'source=("${{pkgname}}-${{pkgver}}.tar.gz"::"{}"'.format(
+            self.package_info['url'])
 
         if old_pkgver == new_pkgver and old_dir == new_dir and old_src == new_src:
             print('already matches: {}'.format(self.package))
             return
 
         print('starting: {}'.format(self.package))
-        fname = '{}-{}.tar.gz'.format(self.package, self.package_info['pkgver'])
-        #Trying to download tar archive to generate checksum
+        fname = '{}-{}.tar.gz'.format(self.package,
+                                      self.package_info['pkgver'])
+        # Trying to download tar archive to generate checksum
         try:
             urllib.request.urlretrieve(self.package_info['dl'], fname)
         except urllib.error.HTTPError:
-            raise RuntimeError('download failed: {}, URL: {}'.format(self.package, self.package_info['dl']))
+            raise RuntimeError('download failed: {}, URL: {}'.format(
+                self.package, self.package_info['dl']))
 
-        sha256 = subprocess.run(['sha256sum', fname], check=True, capture_output=True)
-        new_sha = "sha256sums=('{}'".format(sha256.stdout.decode('utf-8').split(' ')[0])
+        sha256 = subprocess.run(['sha256sum', fname],
+                                check=True, capture_output=True)
+        new_sha = "sha256sums=('{}'".format(
+            sha256.stdout.decode('utf-8').split(' ')[0])
         os.remove(fname)
 
         with open('PKGBUILD', 'r') as f:
@@ -87,11 +98,10 @@ class Update(Routines):
             subprocess.call(['git', 'commit', '-m', 'Update package'])
             subprocess.call(['git', 'push', 'origin', 'master'])
 
-
     def print_metainfo_dict(self):
-        #rosdistro = yaml.load(requests.get(self.rosdistro_url, allow_redirects=True).content,
+        # rosdistro = yaml.load(requests.get(self.rosdistro_url, allow_redirects=True).content,
         #             Loader=yaml.BaseLoader)['repositories']
-        #for repo in rosdistro:
+        # for repo in rosdistro:
         #    print (rosdistro[repo])
         for pkg in self.metainfo_dict:
             print("\n" + pkg + ":\n")

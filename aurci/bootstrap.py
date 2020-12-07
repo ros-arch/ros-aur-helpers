@@ -7,15 +7,17 @@ from concurrent.futures import ThreadPoolExecutor
 class Clone(Routines):
     def __init__(self, package, verbosity, output):
         Routines.__init__(self, package, verbosity, output)
-        self.url = "git@github.com:{0}/{1}.git".format(self.gh_organization_name, self.package)
+        self.url = "git@github.com:{0}/{1}.git".format(
+            self.gh_organization_name, self.package)
 
     def cloning(self):
         Repo.clone_from(self.url, self.repos_path)
 
     def clone(self):
-        if self.package=="all":
+        if self.package == "all":
             t = ThreadPoolExecutor(max_workers=(os.cpu_count()))
-            repos = self.gh_organization.get_repos(type="all", sort="full_name", direction="desc")
+            repos = self.gh_organization.get_repos(
+                type="all", sort="full_name", direction="desc")
             for repo in repos:
                 t.submit(Clone(repo.name, self.verbosity, self.output).cloning)
         else:
@@ -25,7 +27,7 @@ class Clone(Routines):
 class Pull(Routines):
 
     def pull(self):
-        if self.package=="all":
+        if self.package == "all":
             t = ThreadPoolExecutor(max_workers=(os.cpu_count()))
             for folder in os.listdir("./packages"):
                 t.submit(Pull(folder, self.verbosity, self.output).pull)

@@ -8,9 +8,12 @@ import yaml
 import re
 import configparser
 
+
 class Routines:
-    CONFIG_ROOT = os.environ.get("XDG_CONFIG_HOME", os.path.join(Path.home(), ".config/"))
-    CACHE_ROOT = os.environ.get("XDG_CACHE_HOME", os.path.join(Path.home(), ".cache/"))
+    CONFIG_ROOT = os.environ.get(
+        "XDG_CONFIG_HOME", os.path.join(Path.home(), ".config/"))
+    CACHE_ROOT = os.environ.get(
+        "XDG_CACHE_HOME", os.path.join(Path.home(), ".cache/"))
 
     def __init__(self, package=None, verbosity=False, output=True):
         self.verbosity = verbosity
@@ -21,12 +24,13 @@ class Routines:
         self.check_and_create_path(self.cache_path)
         if package:
             self.package = package
-            self.repos_path = os.path.join(self.cache_path, "packages", self.package)
+            self.repos_path = os.path.join(
+                self.cache_path, "packages", self.package)
         config = self.get_config()
         self.gh = Github(config['CI']['GH_OAUTH_TOKEN'])
         self.gh_organization_name = config['CI']['GH_ORGANIZATION']
-        self.gh_organization = self.gh.get_organization(self.gh_organization_name)
-
+        self.gh_organization = self.gh.get_organization(
+            self.gh_organization_name)
 
     @staticmethod
     def check_and_create_path(path):
@@ -47,28 +51,31 @@ class Routines:
 
     def build_metainfo_dict(self):
         rosdistro_url = \
-        f'https://raw.githubusercontent.com/ros/rosdistro/master/{self.get_ros_distro()}/distribution.yaml'
+            f'https://raw.githubusercontent.com/ros/rosdistro/master/{self.get_ros_distro()}/distribution.yaml'
         rosdistro = yaml.load(requests.get(rosdistro_url, allow_redirects=True).content,
                               Loader=yaml.BaseLoader)['repositories']
         ros_dict = {}
         for repo in rosdistro:
-        #Go through distro, and make entry for each package in a repository
+            # Go through distro, and make entry for each package in a repository
             d = rosdistro[repo]
             if 'source' in d:
                 src = d['source']['url']
             elif 'release' in d:
                 src = d['release']['url']
-            target = re.sub(r'\.git', '', src.split('/')[3] + '/' + src.split('/')[4])
+            target = re.sub(r'\.git', '', src.split(
+                '/')[3] + '/' + src.split('/')[4])
             pkgver = d.get('release', {'version': None}).get('version', None)
             if pkgver:
                 pkgver = pkgver.split('-')[0]
             if 'github' in src:
-                dl = 'https://github.com/' + target + '/archive/' + pkgver +'.tar.gz' \
+                dl = 'https://github.com/' + target + '/archive/' + pkgver + '.tar.gz' \
                     if pkgver else None
-                url = 'https://github.com/' + target + '/archive/${pkgver}.tar.gz'
+                url = 'https://github.com/' + \
+                    target + '/archive/${pkgver}.tar.gz'
             else:
                 dl = None
-            pkg_list = d.get('release', {'packages': [repo]}).get('packages', [repo])
+            pkg_list = d.get('release', {'packages': [repo]}).get(
+                'packages', [repo])
             for pkg in pkg_list:
                 siblings = len(pkg_list)-1
                 pkgname = 'ros-melodic-{}'.format(re.sub('_', '-', pkg))

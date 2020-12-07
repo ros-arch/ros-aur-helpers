@@ -5,6 +5,7 @@ __license__ = "The MIT License (MIT)"
 
 import re
 
+
 def replace(oldstr, newstr, infile, dryrun=False):
     '''
     Sed-like Replace function..
@@ -20,11 +21,14 @@ def replace(oldstr, newstr, infile, dryrun=False):
     if dryrun == False:
         with open(infile, "w") as f:
             f.truncate()
-            for line in linelist: f.writelines(line)
+            for line in linelist:
+                f.writelines(line)
     elif dryrun == True:
-        for line in linelist: print(line, end='')
+        for line in linelist:
+            print(line, end='')
     else:
         exit("Unknown option specified to 'dryrun' argument, Usage: dryrun=<True|False>.")
+
 
 def rmlinematch(oldstr, infile, dryrun=False):
     '''
@@ -37,15 +41,19 @@ def rmlinematch(oldstr, infile, dryrun=False):
     with open(infile) as f:
         for item in f:
             rmitem = re.match(r'.*{}'.format(oldstr), item)
-            if type(rmitem) == type(None): linelist.append(item)
+            if type(rmitem) == type(None):
+                linelist.append(item)
     if dryrun == False:
         with open(infile, "w") as f:
             f.truncate()
-            for line in linelist: f.writelines(line)
+            for line in linelist:
+                f.writelines(line)
     elif dryrun == True:
-        for line in linelist: print(line, end='')
+        for line in linelist:
+            print(line, end='')
     else:
         exit("Unknown option specified to 'dryrun' argument, Usage: dryrun=<True|False>.")
+
 
 def rmlinenumber(linenumber, infile, dryrun=False):
     '''
@@ -56,16 +64,20 @@ def rmlinenumber(linenumber, infile, dryrun=False):
     '''
     linelist = []
     linecounter = 0
-    if type(linenumber) != type(linecounter): exit("'linenumber' argument must be an integer.")
+    if type(linenumber) != type(linecounter):
+        exit("'linenumber' argument must be an integer.")
     with open(infile) as f:
         for item in f:
             linecounter = linecounter + 1
-            if linecounter != linenumber: linelist.append(item)
+            if linecounter != linenumber:
+                linelist.append(item)
     if dryrun == False:
         with open(infile, "w") as f:
             f.truncate()
-            for line in linelist: f.writelines(line)
+            for line in linelist:
+                f.writelines(line)
     elif dryrun == True:
-        for line in linelist: print(line, end='')
+        for line in linelist:
+            print(line, end='')
     else:
         exit("Unknown option specified to 'dryrun' argument, Usage: dryrun=<True|False>.")
