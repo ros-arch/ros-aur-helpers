@@ -1,11 +1,11 @@
 #!/bin/zsh
 
-CACHE_PATH=${XDG_CACHE_HOME+"~/.cache"}
+CACHE_PATH=${XDG_CACHE_HOME:-"$HOME/.cache"}
 PACKAGES_PATH=$CACHE_PATH/ros-aur-helper/packages
 
 for i in $(ls $PACKAGES_PATH);
 do
-	if pacman -Si $i | egrep -q 'cpp|boost'; then
+	if pikaur -Si $i | egrep -q 'cpp|boost'; then
 		echo "$i contains c++ code"
 		if ! grep "('any')" $PACKAGES_PATH/$i/PKGBUILD; then
 			echo "$i already has a correct arch=() array"

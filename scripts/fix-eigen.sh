@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-CACHE_PATH=${XDG_CACHE_HOME+"~/.cache"}
+CACHE_PATH=${XDG_CACHE_HOME:-"$HOME/.cache"}
 PACKAGES_PATH=$CACHE_PATH/ros-aur-helper/packages
 
 for i in $(ls $PACKAGES_PATH);
