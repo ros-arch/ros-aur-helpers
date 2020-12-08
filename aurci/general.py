@@ -35,7 +35,8 @@ class Routines:
     @staticmethod
     def check_and_create_path(path):
         if not (os.path.exists(path)):
-            Path.mkdir(path)
+            p = Path(path)
+            p.mkdir(parents=True)
 
     def get_config(self):
         configfile_path = os.path.join(self.config_path, 'config.ini')
