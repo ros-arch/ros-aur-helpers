@@ -109,7 +109,7 @@ class Update(Routines):
 
     def get_nested_package_path(self):
         """Give back the first path containing the package name."""
-        repo_name = self.package_info['src'].lstrip('https://github.com/')[:-4]
+        repo_name = self.package_info['src'].replace('https://github.com/', '', 1)[:-4]
         repo = self.gh.get_repo(repo_name)
         contents = repo.get_contents(".")
         for content in contents:
