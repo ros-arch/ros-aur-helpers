@@ -22,10 +22,12 @@ class Routines:
         self.cache_path = os.path.join(Routines.CACHE_ROOT, 'ros-aur-helper')
         self.check_and_create_path(self.config_path)
         self.check_and_create_path(self.cache_path)
+        self.packages_path = os.path.join(self.cache_path, 'packages')
+        self.check_and_create_path(self.packages_path)
         if package:
             self.package = package
-            self.repos_path = os.path.join(
-                self.cache_path, "packages", self.package)
+            self.pkgrepo_path = os.path.join(
+                self.packages_path, self.package)
         config = self.get_config()
         self.gh = Github(config['CI']['GH_OAUTH_TOKEN'])
         self.gh_organization_name = config['CI']['GH_ORGANIZATION']

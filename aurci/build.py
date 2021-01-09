@@ -49,7 +49,7 @@ class Packages(Routines):
 
     def build(self):
         if self.package == "all":
-            for folder in os.listdir("./packages"):
+            for folder in os.listdir(self.packages_path):
                 Packages(folder, self.verbosity, self.output).makepkg()
         else:
             self.makepkg()
@@ -83,7 +83,7 @@ class Packages(Routines):
         if self.package == "all":
             os.remove(self.FAILED_FILE)
             os.mknod(self.FAILED_FILE)
-            for folder in os.listdir("./packages"):
+            for folder in os.listdir(self.packages_path):
                 with open(self.SUCCESS_FILE, "r") as fobj:
                     if folder in fobj.read():
                         pass

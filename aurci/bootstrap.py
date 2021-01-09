@@ -29,7 +29,7 @@ class Pull(Routines):
     def pull(self):
         if self.package == "all":
             t = ThreadPoolExecutor(max_workers=(os.cpu_count()))
-            for folder in os.listdir("./packages"):
+            for folder in os.listdir(self.packages_path):
                 t.submit(Pull(folder, self.verbosity, self.output).pull)
         else:
             repo = Repo(path=self.repos_path)
