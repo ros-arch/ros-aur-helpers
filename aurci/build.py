@@ -24,11 +24,11 @@ class Packages(Routines):
         self.check_and_create_path(self.localrepo_path)
 
     def makepkg(self):
-        if os.path.isfile(os.path.join(self.repos_path, "PKGBUILD")):
+        if os.path.isfile(os.path.join(self.pkgrepo_path, "PKGBUILD")):
             try:
                 subprocess.run([MAKECHROOTPKG_BIN, '-c', '-d', self.localrepo_path, '-r',
                                 self.chroot], stdout=(None if self.verbosity else subprocess.DEVNULL),
-                               stderr=subprocess.STDOUT, cwd=self.repos_path, check=True)
+                               stderr=subprocess.STDOUT, cwd=self.pkgrepo_path, check=True)
                 with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
                 if self.output:
@@ -40,7 +40,7 @@ class Packages(Routines):
                 raise RuntimeWarning(
                     "Building of {0} failed".format(self.package))
         else:
-            raise FileNotFoundError("No PKBUILD existing: ", self.repos_path)
+            raise FileNotFoundError("No PKBUILD existing: ", self.pkgrepo_path)
         try:
             subprocess.run([REPO_ADD_BIN, 'localhost.db.tar.zst'] + glob.glob(os.path.join(self.localrepo_path, '*.pkg.tar.*')),
                            check=True, cwd=self.localrepo_path)
@@ -59,14 +59,14 @@ class Packages(Routines):
             os.remove(pkg)
 
     def mvpkg(self):
-        for pkg_path in glob.iglob(self.repos_path + "/*pkg.tar*"):
+        for pkg_path in glob.iglob(self.pkgrepo_path + "/*pkg.tar*"):
             shutil.move(pkg_path, "./repository/")
 
     def aur_push(self):
         try:
-            pkg_repo = Repo(path=self.repos_path).remote(name='aur')
+            pkg_repo = Repo(path=self.pkgrepo_path).remote(name='aur')
         except ValueError:
-            pkg_repo = Repo(path=self.repos_path).create_remote(
+            pkg_repo = Repo(path=self.pkgrepo_path).create_remote(
                 'aur', "aur@aur.archlinux.org:/{0}.git".format(self.package))
         pkg_repo.fetch()
         try:

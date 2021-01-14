@@ -11,7 +11,7 @@ class Clone(Routines):
             self.gh_organization_name, self.package)
 
     def cloning(self):
-        Repo.clone_from(self.url, self.repos_path)
+        Repo.clone_from(self.url, self.pkgrepo_path)
 
     def clone(self):
         if self.package == "all":
@@ -32,7 +32,7 @@ class Pull(Routines):
             for folder in os.listdir(self.packages_path):
                 t.submit(Pull(folder, self.verbosity, self.output).pull)
         else:
-            repo = Repo(path=self.repos_path)
+            repo = Repo(path=self.pkgrepo_path)
             repo.git.stash()
             repo.git.stash("clear")
             head_before = repo.head.object.hexsha
