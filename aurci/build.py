@@ -76,7 +76,7 @@ class Packages(Routines):
             self.makepkg()
 
     def del_old_pkg(self):
-        for pkg in glob.iglob("./repository/*{0}-?.*-?-*.pkg.tar.*".format(self.package)):
+        for pkg in glob.iglob("{0}/*{1}-?.*-?-*.pkg.tar.*".format(self.localrepo_path, self.package)):
             os.remove(pkg)
 
     def mvpkg(self):
