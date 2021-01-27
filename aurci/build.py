@@ -1,3 +1,4 @@
+from datetime import datetime
 import subprocess
 import os
 import sys
@@ -24,6 +25,10 @@ class Packages(Routines):
         self.localrepo_path = os.path.join(self.cache_path, 'repo')
         self.check_and_create_path(self.localrepo_path)
 
+        self.log_root = os.path.join(self.cache_path, 'logs')
+        self.check_and_create_path(self.log_root)
+
+
     def makepkg(self):
         if os.path.isfile(os.path.join(self.pkgrepo_path, "PKGBUILD")):
             try:
@@ -32,9 +37,12 @@ class Packages(Routines):
                                stderr=subprocess.STDOUT,
                                cwd=self.pkgrepo_path,
                                check=True)
-                subprocess.run([MAKECHROOTPKG_BIN, '-c', '-d', self.localrepo_path, '-r',
-                                self.chroot], stdout=(None if self.verbosity else subprocess.DEVNULL),
-                               stderr=subprocess.STDOUT, cwd=self.pkgrepo_path, check=True)
+                now = datetime.now()
+                with open(os.path.join(self.log_root, self.package + "_"
+                                       + now.strftime("%Y%m%d_%H%M%S")), 'w') as log:
+                    subprocess.run([MAKECHROOTPKG_BIN, '-c', '-d', self.localrepo_path, '-r',
+                                    self.chroot], stdout=(None if self.verbosity else log),
+                                   stderr=subprocess.STDOUT, cwd=self.pkgrepo_path, check=True)
                 with open("success.txt", "a") as fobj:
                     fobj.write(self.package + "\n")
                 if self.output:
