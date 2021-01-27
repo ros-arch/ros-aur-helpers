@@ -81,7 +81,7 @@ class Packages(Routines):
 
     def mvpkg(self):
         for pkg_path in glob.iglob(self.pkgrepo_path + "/*pkg.tar*"):
-            shutil.move(pkg_path, "./repository/")
+            shutil.move(pkg_path, self.localrepo_path)
 
     def aur_push(self):
         try:
