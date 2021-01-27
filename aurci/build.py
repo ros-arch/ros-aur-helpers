@@ -56,7 +56,10 @@ class Packages(Routines):
         else:
             raise FileNotFoundError("No PKBUILD existing: ", self.pkgrepo_path)
         try:
-            subprocess.run([REPO_ADD_BIN, 'localhost.db.tar.zst'] + glob.glob(os.path.join(self.repos_path, '*.pkg.tar.*')),
+            self.del_old_pkg()
+            self.mvpkg()
+            subprocess.run([REPO_ADD_BIN, 'localhost.db.tar.zst']
+                           + glob.glob("{0}/*{1}-?.*-?-*.pkg.tar.*".format(self.localrepo_path, self.package)),
                            check=True, cwd=self.localrepo_path)
         except subprocess.CalledProcessError as e:
             print(e.stdout, file=sys.stderr)
