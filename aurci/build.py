@@ -63,8 +63,15 @@ class Packages(Routines):
 
     def build(self):
         if self.package == "all":
+            failed_packages = list()
             for folder in os.listdir(self.packages_path):
-                Packages(folder, self.verbosity, self.output).makepkg()
+                try:
+                    Packages(folder, self.verbosity, self.output).makepkg()
+                except RuntimeWarning as err:
+                    # Using the actual package name would be nicer!
+                    failed_packages.append(folder)
+                    print(err)
+            print("Failed packages:\n{}".format(" ".join(failed_packages)))
         else:
             self.makepkg()
 
