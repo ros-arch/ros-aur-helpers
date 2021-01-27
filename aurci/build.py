@@ -8,6 +8,7 @@ from aurci.general import Routines
 
 REPO_ADD_BIN = '/usr/bin/repo-add'
 MAKECHROOTPKG_BIN = '/usr/bin/makechrootpkg'
+ARCH_NSPAWN_BIN = '/usr/bin/arch-nspawn'
 
 
 class Packages(Routines):
@@ -26,6 +27,11 @@ class Packages(Routines):
     def makepkg(self):
         if os.path.isfile(os.path.join(self.pkgrepo_path, "PKGBUILD")):
             try:
+                subprocess.run([ARCH_NSPAWN_BIN, self.chroot+"/root", "pacman", "-Syu"],
+                               stdout=( None if self.verbosity else subprocess.DEVNULL),
+                               stderr=subprocess.STDOUT,
+                               cwd=self.pkgrepo_path,
+                               check=True)
                 subprocess.run([MAKECHROOTPKG_BIN, '-c', '-d', self.localrepo_path, '-r',
                                 self.chroot], stdout=(None if self.verbosity else subprocess.DEVNULL),
                                stderr=subprocess.STDOUT, cwd=self.pkgrepo_path, check=True)
