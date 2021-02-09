@@ -81,7 +81,7 @@ class Routines:
                 'packages', [repo])
             for pkg in pkg_list:
                 siblings = len(pkg_list)-1
-                pkgname = 'ros-melodic-{}'.format(re.sub('_', '-', pkg))
+                pkgname = 'ros-{}-{}'.format(self.get_ros_distro(), re.sub('_', '-', pkg))
                 ros_dict[pkgname] = {'repo': repo, 'siblings': siblings, 'orig_name': pkg,
                                      'pkgname': pkgname, 'src': src, 'pkgver': pkgver, 'dl': dl, 'url': url}
         return ros_dict
